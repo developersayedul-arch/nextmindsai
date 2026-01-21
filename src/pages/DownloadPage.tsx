@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { BusinessFormData } from "./AnalyzePage";
+import { generateBusinessPDF } from "@/lib/pdfGenerator";
 import { 
   Download, 
   FileText, 
@@ -15,27 +16,35 @@ import {
 const DownloadPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<BusinessFormData | null>(null);
+  const [analysis, setAnalysis] = useState<any>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("businessFormData");
-    if (!storedData) {
+    const storedResults = sessionStorage.getItem("analysisResults");
+    if (!storedData || !storedResults) {
       navigate("/analyze");
       return;
     }
     setFormData(JSON.parse(storedData) as BusinessFormData);
+    setAnalysis(JSON.parse(storedResults));
   }, [navigate]);
 
   const handleDownload = async () => {
+    if (!formData || !analysis) return;
     setIsDownloading(true);
-    // Simulate download
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsDownloading(false);
-    setDownloaded(true);
+    try {
+      generateBusinessPDF(formData, analysis);
+      setDownloaded(true);
+    } catch (error) {
+      console.error("PDF generation error:", error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
-  if (!formData) return null;
+  if (!formData || !analysis) return null;
 
   return (
     <Layout>

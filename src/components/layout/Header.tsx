@@ -1,9 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Sparkles, User, LogOut, History } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,14 +40,53 @@ const Header = () => {
           >
             Pricing
           </Link>
+          {user && (
+            <Link 
+              to="/history" 
+              className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/history' ? 'text-primary' : 'text-muted-foreground'}`}
+            >
+              History
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button variant="hero" size="sm" asChild>
-            <Link to="/analyze">
-              Analyze করুন
-            </Link>
-          </Button>
+          {user ? (
+            <>
+              <Button variant="hero" size="sm" asChild>
+                <Link to="/analyze">Analyze করুন</Link>
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/history" className="flex items-center gap-2">
+                      <History className="h-4 w-4" />
+                      My Analyses
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/auth">Login</Link>
+              </Button>
+              <Button variant="hero" size="sm" asChild>
+                <Link to="/analyze">Analyze করুন</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

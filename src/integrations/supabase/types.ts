@@ -14,7 +14,163 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analyses: {
+        Row: {
+          budget_range: string
+          business_idea: string
+          business_type: string
+          created_at: string
+          id: string
+          is_paid: boolean
+          location: string | null
+          results: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_range: string
+          business_idea: string
+          business_type: string
+          created_at?: string
+          id?: string
+          is_paid?: boolean
+          location?: string | null
+          results?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_range?: string
+          business_idea?: string
+          business_type?: string
+          created_at?: string
+          id?: string
+          is_paid?: boolean
+          location?: string | null
+          results?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          analysis_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          payment_method: string
+          sender_number: string | null
+          status: string
+          transaction_id: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount: number
+          analysis_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          payment_method: string
+          sender_number?: string | null
+          status?: string
+          transaction_id: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount?: number
+          analysis_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string
+          sender_number?: string | null
+          status?: string
+          transaction_id?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          payment_id: string | null
+          plan_type: string
+          starts_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          payment_id?: string | null
+          plan_type: string
+          starts_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          payment_id?: string | null
+          plan_type?: string
+          starts_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
