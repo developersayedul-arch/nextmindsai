@@ -126,7 +126,9 @@ const PricingPage = () => {
               </div>
 
               <Button variant={plan.ctaVariant} size="lg" className="w-full" asChild>
-                <Link to="/analyze">{plan.cta}</Link>
+                <Link to={plan.name === "Free" ? "/analyze" : `/payment?plan=${plan.name === "Single Analysis" ? "single" : "unlimited"}`}>
+                  {plan.cta}
+                </Link>
               </Button>
             </div>
           ))}

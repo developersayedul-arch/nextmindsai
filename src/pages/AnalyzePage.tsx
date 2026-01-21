@@ -6,7 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export interface BusinessFormData {
   businessIdea: string;
@@ -17,6 +20,7 @@ export interface BusinessFormData {
 
 const AnalyzePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<BusinessFormData>({
     businessIdea: "",
@@ -30,20 +34,62 @@ const AnalyzePage = () => {
     if (!formData.businessIdea.trim()) return;
 
     setIsLoading(true);
-    
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Store form data and navigate to results
-    sessionStorage.setItem("businessFormData", JSON.stringify(formData));
-    navigate("/results");
+
+    try {
+      // Call the AI edge function
+      const { data, error } = await supabase.functions.invoke("analyze-business", {
+        body: {
+          businessIdea: formData.businessIdea,
+          businessType: formData.businessType,
+          budgetRange: formData.budgetRange,
+          location: formData.location
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Store form data and results
+      sessionStorage.setItem("businessFormData", JSON.stringify(formData));
+      sessionStorage.setItem("analysisResults", JSON.stringify(data.analysis));
+
+      // Save to database if user is logged in
+      if (user) {
+        const { data: analysisRecord, error: dbError } = await supabase
+          .from("analyses")
+          .insert({
+            user_id: user.id,
+            business_idea: formData.businessIdea,
+            business_type: formData.businessType,
+            budget_range: formData.budgetRange,
+            location: formData.location || null,
+            results: data.analysis,
+            is_paid: false
+          })
+          .select()
+          .single();
+
+        if (!dbError && analysisRecord) {
+          sessionStorage.setItem("analysisId", analysisRecord.id);
+        }
+      }
+
+      navigate("/results");
+    } catch (error) {
+      console.error("Analysis error:", error);
+      toast.error(error instanceof Error ? error.message : "Analysis করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Layout>
       <div className="section-container py-12 md:py-20">
         <div className="max-w-2xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-10">
             <div className="gradient-hero w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Sparkles className="h-8 w-8 text-primary-foreground" />
@@ -54,9 +100,7 @@ const AnalyzePage = () => {
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Business Idea */}
             <div className="space-y-3">
               <Label htmlFor="businessIdea" className="text-base font-medium">
                 আপনার Business Idea <span className="text-destructive">*</span>
@@ -74,7 +118,6 @@ const AnalyzePage = () => {
               </p>
             </div>
 
-            {/* Business Type */}
             <div className="space-y-3">
               <Label className="text-base font-medium">Business Type</Label>
               <RadioGroup
@@ -105,7 +148,6 @@ const AnalyzePage = () => {
               </RadioGroup>
             </div>
 
-            {/* Budget Range */}
             <div className="space-y-3">
               <Label className="text-base font-medium">Budget Range</Label>
               <RadioGroup
@@ -136,7 +178,6 @@ const AnalyzePage = () => {
               </RadioGroup>
             </div>
 
-            {/* Location */}
             <div className="space-y-3">
               <Label htmlFor="location" className="text-base font-medium">
                 Location <span className="text-muted-foreground">(optional)</span>
@@ -149,7 +190,6 @@ const AnalyzePage = () => {
               />
             </div>
 
-            {/* Submit Button */}
             <Button 
               type="submit" 
               variant="hero" 
@@ -160,7 +200,7 @@ const AnalyzePage = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Analyzing...
+                  AI Analyzing... (30-60 সেকেন্ড)
                 </>
               ) : (
                 <>
@@ -171,7 +211,6 @@ const AnalyzePage = () => {
             </Button>
           </form>
 
-          {/* Trust Indicator */}
           <p className="text-center text-sm text-muted-foreground mt-8">
             Powered by <span className="font-semibold">SA Coder</span> • 
             Developed & Secured by <span className="font-semibold">SA Coder</span>
