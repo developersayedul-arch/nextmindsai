@@ -27,79 +27,68 @@ import {
   FileText
 } from "lucide-react";
 
-// Mock AI response generator
-const generateMockAnalysis = (data: BusinessFormData) => {
-  const isOnline = data.businessType === "online" || data.businessType === "both";
-  const lowBudget = data.budgetRange === "under10k";
-  
-  return {
-    businessReality: {
-      type: isOnline ? "Product (Online-focused)" : "Product (Offline-focused)",
-      beginnerFriendly: lowBudget ? "হ্যাঁ, beginner-friendly" : "মাঝারি — কিছু অভিজ্ঞতা দরকার",
-      biggestRisk: "Initial investment recover না হওয়া এবং stock unsold থাকা"
-    },
-    productDecision: {
-      primary: "ঘরে তৈরি আচার — Mango Pickle দিয়ে শুরু করুন",
-      backup: "Ready-made packaging এ resell করুন যদি production handle না হয়",
-      reasoning: "Homemade food এ trust বেশি, margin ভালো, capital কম লাগে"
-    },
-    sourceGuide: {
-      where: "কাঁচামাল: কারওয়ান বাজার, নিউমার্কেট। Packaging: চকবাজার",
-      costBreakdown: "Product: ৳50, Packaging: ৳20, Delivery: ৳60-120, Margin: ৳50-100",
-      commonMistake: "বেশি variety দিয়ে শুরু করা — ১টা product দিয়ে শুরু করুন"
-    },
-    deliveryPlan: {
-      method: "Pathao/Steadfast — ঢাকার ভিতরে। বাইরে Sundarban/SA Paribahan",
-      payment: "COD recommended শুরুতে — trust build করতে হবে",
-      riskWarning: "COD return হলে delivery charge গুনতে হবে — ৳60-120 loss per return"
-    },
-    websiteDecision: {
-      verdict: isOnline && !lowBudget ? "OPTIONAL" : "NOT NEEDED",
-      explanation: lowBudget 
-        ? "এই budget-এ website unnecessary expense। Facebook/Instagram page দিয়ে শুরু করুন। Website-এর maintenance cost আছে যা এখন দরকার নেই।"
-        : "Website থাকলে professional দেখায়, কিন্তু শুরুতে Facebook page-ই যথেষ্ট। ৬ মাস পর consider করুন।",
-      websiteType: isOnline && !lowBudget ? "Landing Page with Order Form" : null,
-      features: isOnline && !lowBudget ? ["Product showcase", "Order form", "WhatsApp integration"] : null,
-      notToBuild: "Full ecommerce with payment gateway — এখন unnecessary"
-    },
-    marketingPlan: {
-      first10Customers: [
-        "নিজের Facebook/WhatsApp contact list-এ post করুন",
-        "Local Facebook groups-এ join করুন",
-        "প্রথম ৫ জনকে discount দিন review এর জন্য",
-        "Instagram Reels বানান — product making process দেখান"
-      ],
-      whereToMarket: "Facebook Groups, Instagram, WhatsApp Status",
-      whatToSay: "ঘরে তৈরি, preservative-free, গ্রামের স্বাদ — এই angle use করুন",
-      whatNotToDo: "Paid ads এখনই দেবেন না — organic দিয়ে validate করুন"
-    },
-    actionPlan: {
-      day1to3: "Recipe finalize, packaging source করুন, ১০টা sample বানান",
-      day4to7: "Friends/family কে taste করান, feedback নিন, price fix করুন",
-      day8to14: "Facebook page create, first 10 posts schedule, order নেওয়া শুরু করুন"
-    },
-    failureWarning: {
-      whereFailOccurs: "Marketing-এ consistency না রাখা — ২ সপ্তাহ পর হাল ছেড়ে দেওয়া",
-      moneyLossMistake: "বেশি stock করে ফেলা আগেই — demand বুঝে slowly scale করুন"
-    }
+// Analysis result type from AI
+interface AnalysisResult {
+  businessReality: {
+    type: string;
+    beginnerFriendly: string;
+    biggestRisk: string;
   };
-};
+  productDecision: {
+    primary: string;
+    backup: string;
+    reasoning: string;
+  };
+  sourceGuide: {
+    where: string;
+    costBreakdown: string;
+    commonMistake: string;
+  };
+  deliveryPlan: {
+    method: string;
+    payment: string;
+    riskWarning: string;
+  };
+  websiteDecision: {
+    verdict: "MUST" | "OPTIONAL" | "NOT NEEDED";
+    explanation: string;
+    websiteType: string | null;
+    features: string[] | null;
+    notToBuild: string;
+  };
+  marketingPlan: {
+    first10Customers: string[];
+    whereToMarket: string;
+    whatToSay: string;
+    whatNotToDo: string;
+  };
+  actionPlan: {
+    day1to3: string;
+    day4to7: string;
+    day8to14: string;
+  };
+  failureWarning: {
+    whereFailOccurs: string;
+    moneyLossMistake: string;
+  };
+}
 
 const ResultsPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<BusinessFormData | null>(null);
-  const [analysis, setAnalysis] = useState<ReturnType<typeof generateMockAnalysis> | null>(null);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
 
   useEffect(() => {
-    const storedData = sessionStorage.getItem("businessFormData");
-    if (!storedData) {
+    const storedFormData = sessionStorage.getItem("businessFormData");
+    const storedResults = sessionStorage.getItem("analysisResults");
+    
+    if (!storedFormData || !storedResults) {
       navigate("/analyze");
       return;
     }
     
-    const data = JSON.parse(storedData) as BusinessFormData;
-    setFormData(data);
-    setAnalysis(generateMockAnalysis(data));
+    setFormData(JSON.parse(storedFormData) as BusinessFormData);
+    setAnalysis(JSON.parse(storedResults) as AnalysisResult);
   }, [navigate]);
 
   if (!analysis || !formData) {
