@@ -17,7 +17,9 @@ import {
   ArrowLeft,
   Shield,
   Users,
-  MessageCircle
+  MessageCircle,
+  CreditCard,
+  ExternalLink
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -48,6 +50,15 @@ const SESSION_LABELS: Record<string, string> = {
   "tech-guidance": "টেক ও ওয়েবসাইট গাইডেন্স"
 };
 
+// DodoPayment product IDs for mentorship
+const DODO_MENTORSHIP_PRODUCTS: Record<string, string> = {
+  "business-idea": "prod_mentorship_idea",
+  "marketing": "prod_mentorship_marketing",
+  "scaling": "prod_mentorship_scaling",
+  "full-consultation": "prod_mentorship_full",
+  "tech-guidance": "prod_mentorship_tech"
+};
+
 const MentorshipPaymentPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -61,6 +72,7 @@ const MentorshipPaymentPage = () => {
   const [transactionId, setTransactionId] = useState("");
   const [senderNumber, setSenderNumber] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dodoLoading, setDodoLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   // Fetch active payment methods
@@ -75,6 +87,7 @@ const MentorshipPaymentPage = () => {
       if (error) throw error;
       return data as PaymentMethod[];
     },
+    staleTime: 0,
   });
 
   // Set first method as default when loaded
@@ -85,11 +98,52 @@ const MentorshipPaymentPage = () => {
   }, [paymentMethods, selectedMethodId]);
 
   const selectedMethod = paymentMethods?.find((m) => m.id === selectedMethodId);
+  
+  // Check if selected method is a payment gateway
+  const isPaymentGateway = Boolean(selectedMethod && selectedMethod.type === 'payment_gateway');
 
   const copyNumber = (number: string | null) => {
     if (!number) return;
     navigator.clipboard.writeText(number);
     toast.success("নম্বর copy হয়েছে!");
+  };
+
+  // Handle DodoPayment checkout for mentorship
+  const handleDodoCheckout = async () => {
+    if (!user) {
+      toast.error("Please login first");
+      return;
+    }
+
+    setDodoLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('dodo-checkout', {
+        body: {
+          productId: DODO_MENTORSHIP_PRODUCTS[sessionType] || "prod_mentorship_default",
+          quantity: 1,
+          customerEmail: user.email,
+          customerName: user.user_metadata?.full_name || user.email,
+          amount: price,
+          planType: `mentorship_${sessionType}`,
+          analysisId: sessionId,
+          returnUrl: `${window.location.origin}/mentorship/payment?status=success&type=${sessionType}`
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error) {
+      console.error('DodoPayment error:', error);
+      toast.error("Payment gateway error. Please try another method.");
+    } finally {
+      setDodoLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -216,95 +270,148 @@ const MentorshipPaymentPage = () => {
                   {paymentMethods.map((method) => (
                     <Label
                       key={method.id}
-                      className={`flex items-center justify-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                      className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
                         selectedMethodId === method.id
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
                       }`}
                     >
                       <RadioGroupItem value={method.id} className="sr-only" />
+                      {method.type === 'payment_gateway' && (
+                        <CreditCard className="h-4 w-4 mb-1 text-primary" />
+                      )}
                       <span className="font-medium text-sm text-center">{method.name}</span>
+                      {method.type === 'payment_gateway' && (
+                        <span className="text-[10px] text-muted-foreground mt-0.5">Online</span>
+                      )}
                     </Label>
                   ))}
                 </RadioGroup>
               </div>
 
-              {/* Payment Instructions */}
-              {selectedMethod?.instructions && (
-                <div className="bg-secondary/30 p-4 rounded-lg mb-6">
-                  <p className="font-medium mb-2">নির্দেশনা:</p>
-                  <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
-                </div>
-              )}
+              {/* Show different UI based on payment method type */}
+              {isPaymentGateway ? (
+                /* DodoPayment / Online Gateway UI */
+                <div className="space-y-4">
+                  {selectedMethod?.instructions && (
+                    <div className="bg-secondary/30 p-4 rounded-lg">
+                      <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
+                    </div>
+                  )}
 
-              {/* Payment Number */}
-              {selectedMethod?.account_number && (
-                <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg mb-6">
-                  <p className="text-sm text-muted-foreground mb-1">
-                    {selectedMethod.name} নম্বর:
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-primary">
-                      {selectedMethod.account_number}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyNumber(selectedMethod.account_number)}
+                  <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg text-center">
+                    <CreditCard className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="font-medium mb-1">Pay ৳{price}</p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Secure online payment via {selectedMethod?.name}
+                    </p>
+                    <Button 
+                      variant="hero" 
+                      size="lg" 
+                      className="w-full"
+                      onClick={handleDodoCheckout}
+                      disabled={dodoLoading}
                     >
-                      <Copy className="h-4 w-4" />
-                      Copy
+                      {dodoLoading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Redirecting...
+                        </>
+                      ) : (
+                        <>
+                          <ExternalLink className="h-5 w-5" />
+                          Pay with {selectedMethod?.name}
+                        </>
+                      )}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Amount: ৳{price} {selectedMethod.account_name && `(${selectedMethod.account_name})`}
+
+                  <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                    <Shield className="h-3 w-3" />
+                    Secure payment powered by {selectedMethod?.name}
+                  </p>
+                </div>
+              ) : (
+                /* Manual Payment UI (bKash, Nagad, etc.) */
+                <div className="space-y-4">
+                  {/* Payment Instructions */}
+                  {selectedMethod?.instructions && (
+                    <div className="bg-secondary/30 p-4 rounded-lg">
+                      <p className="font-medium mb-2">নির্দেশনা:</p>
+                      <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
+                    </div>
+                  )}
+
+                  {/* Payment Number */}
+                  {selectedMethod?.account_number && (
+                    <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg">
+                      <p className="text-sm text-muted-foreground mb-1">
+                        {selectedMethod.name} নম্বর:
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-primary">
+                          {selectedMethod.account_number}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyNumber(selectedMethod.account_number)}
+                        >
+                          <Copy className="h-4 w-4" />
+                          Copy
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Amount: ৳{price} {selectedMethod.account_name && `(${selectedMethod.account_name})`}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Form */}
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="transactionId">Transaction ID</Label>
+                      <Input
+                        id="transactionId"
+                        placeholder="যেমন: TXN123456789"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="senderNumber">আপনার নম্বর</Label>
+                      <Input
+                        id="senderNumber"
+                        placeholder="01XXXXXXXXX"
+                        value={senderNumber}
+                        onChange={(e) => setSenderNumber(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          সাবমিট হচ্ছে...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="h-5 w-5" />
+                          পেমেন্ট সাবমিট করুন
+                        </>
+                      )}
+                    </Button>
+                  </form>
+
+                  <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                    <Shield className="h-3 w-3" />
+                    Powered by SA Coder
                   </p>
                 </div>
               )}
-
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="transactionId">Transaction ID</Label>
-                  <Input
-                    id="transactionId"
-                    placeholder="যেমন: TXN123456789"
-                    value={transactionId}
-                    onChange={(e) => setTransactionId(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="senderNumber">আপনার নম্বর</Label>
-                  <Input
-                    id="senderNumber"
-                    placeholder="01XXXXXXXXX"
-                    value={senderNumber}
-                    onChange={(e) => setSenderNumber(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      সাবমিট হচ্ছে...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      পেমেন্ট সাবমিট করুন
-                    </>
-                  )}
-                </Button>
-              </form>
-
-              <p className="text-xs text-muted-foreground text-center mt-4 flex items-center justify-center gap-1">
-                <Shield className="h-3 w-3" />
-                Powered by SA Coder
-              </p>
             </div>
           ) : (
             <div className="bg-card border border-border rounded-2xl p-8 text-center">
