@@ -125,6 +125,53 @@ export type Database = {
         }
         Relationships: []
       }
+      follow_up_reminders: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          lead_id: string | null
+          notes: string | null
+          reminder_type: string
+          scheduled_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          reminder_type?: string
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          reminder_type?: string
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follow_up_reminders_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           budget_range: string | null
@@ -180,6 +227,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mentorship_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          sender_type: string
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          sender_type: string
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          sender_type?: string
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentorship_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "mentorship_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentorship_sessions: {
+        Row: {
+          business_idea: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          meeting_link: string | null
+          mentor_name: string
+          notes: string | null
+          payment_status: string
+          price: number
+          session_date: string
+          session_type: string
+          status: string
+          topics: string[] | null
+          updated_at: string
+          user_id: string | null
+          whatsapp_number: string
+        }
+        Insert: {
+          business_idea?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          meeting_link?: string | null
+          mentor_name?: string
+          notes?: string | null
+          payment_status?: string
+          price?: number
+          session_date: string
+          session_type: string
+          status?: string
+          topics?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+          whatsapp_number: string
+        }
+        Update: {
+          business_idea?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          meeting_link?: string | null
+          mentor_name?: string
+          notes?: string | null
+          payment_status?: string
+          price?: number
+          session_date?: string
+          session_type?: string
+          status?: string
+          topics?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+          whatsapp_number?: string
+        }
+        Relationships: []
       }
       page_views: {
         Row: {

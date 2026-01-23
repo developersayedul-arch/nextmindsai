@@ -8,7 +8,10 @@ import {
   Globe,
   LogOut,
   Home,
-  Target
+  Target,
+  Bell,
+  TrendingUp,
+  GraduationCap
 } from "lucide-react";
 import {
   Sidebar,
@@ -23,45 +26,53 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   { 
     title: "ড্যাশবোর্ড", 
     url: "/admin", 
-    icon: LayoutDashboard,
-    description: "Overview & stats"
+    icon: LayoutDashboard
   },
   { 
     title: "লিডস", 
     url: "/admin/leads", 
-    icon: Target,
-    description: "সব লিড দেখুন"
+    icon: Target
+  },
+  { 
+    title: "ফলো-আপ", 
+    url: "/admin/follow-ups", 
+    icon: Bell
+  },
+  { 
+    title: "এনালিটিক্স", 
+    url: "/admin/analytics", 
+    icon: TrendingUp
+  },
+  { 
+    title: "মেন্টরশিপ", 
+    url: "/admin/mentorship", 
+    icon: GraduationCap
   },
   { 
     title: "এনালাইসিস", 
     url: "/admin/analyses", 
-    icon: FileText,
-    description: "Business analyses"
+    icon: FileText
   },
   { 
     title: "ভিজিটর", 
     url: "/admin/visitors", 
-    icon: Eye,
-    description: "Visitor tracking"
+    icon: Eye
   },
   { 
     title: "সার্ভিস", 
     url: "/admin/services", 
-    icon: Globe,
-    description: "SA Coder services"
+    icon: Globe
   },
   { 
     title: "সিকিউরিটি", 
     url: "/admin/security", 
-    icon: Shield,
-    description: "Login attempts"
+    icon: Shield
   },
 ];
 
