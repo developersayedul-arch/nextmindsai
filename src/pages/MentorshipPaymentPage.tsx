@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,11 +21,16 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-const PAYMENT_NUMBERS = {
-  bkash: "01712345678",
-  nagad: "01812345678",
-  rocket: "01912345678"
-};
+interface PaymentMethod {
+  id: string;
+  name: string;
+  type: string;
+  account_number: string | null;
+  account_name: string | null;
+  instructions: string | null;
+  is_active: boolean;
+  display_order: number;
+}
 
 const SESSION_PRICES: Record<string, number> = {
   "business-idea": 499,
@@ -51,13 +57,37 @@ const MentorshipPaymentPage = () => {
   const sessionType = searchParams.get("type") || "business-idea";
   const price = SESSION_PRICES[sessionType] || 499;
   
-  const [paymentMethod, setPaymentMethod] = useState<"bkash" | "nagad" | "rocket">("bkash");
+  const [selectedMethodId, setSelectedMethodId] = useState<string>("");
   const [transactionId, setTransactionId] = useState("");
   const [senderNumber, setSenderNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const copyNumber = (number: string) => {
+  // Fetch active payment methods
+  const { data: paymentMethods, isLoading: methodsLoading } = useQuery({
+    queryKey: ["active-payment-methods"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payment_methods")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data as PaymentMethod[];
+    },
+  });
+
+  // Set first method as default when loaded
+  useEffect(() => {
+    if (paymentMethods && paymentMethods.length > 0 && !selectedMethodId) {
+      setSelectedMethodId(paymentMethods[0].id);
+    }
+  }, [paymentMethods, selectedMethodId]);
+
+  const selectedMethod = paymentMethods?.find((m) => m.id === selectedMethodId);
+
+  const copyNumber = (number: string | null) => {
+    if (!number) return;
     navigator.clipboard.writeText(number);
     toast.success("নম্বর copy হয়েছে!");
   };
@@ -73,6 +103,10 @@ const MentorshipPaymentPage = () => {
       toast.error("আপনার নম্বর দিন");
       return;
     }
+    if (!selectedMethod) {
+      toast.error("পেমেন্ট মেথড সিলেক্ট করুন");
+      return;
+    }
 
     setLoading(true);
 
@@ -85,7 +119,7 @@ const MentorshipPaymentPage = () => {
           analysis_id: null,
           transaction_id: transactionId.trim(),
           amount: price,
-          payment_method: paymentMethod,
+          payment_method: selectedMethod.name,
           sender_number: senderNumber.trim(),
           status: "pending",
           notes: `Mentorship Session: ${SESSION_LABELS[sessionType]} (Session ID: ${sessionId || "Direct"})`
@@ -118,11 +152,26 @@ const MentorshipPaymentPage = () => {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || methodsLoading) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!paymentMethods || paymentMethods.length === 0) {
+    return (
+      <Layout>
+        <div className="section-container py-12 md:py-20">
+          <div className="max-w-lg mx-auto text-center">
+            <p className="text-muted-foreground">কোন পেমেন্ট মেথড পাওয়া যায়নি। পরে আবার চেষ্টা করুন।</p>
+            <Button asChild className="mt-4">
+              <Link to="/mentorship">ফিরে যান</Link>
+            </Button>
+          </div>
         </div>
       </Layout>
     );
@@ -160,67 +209,58 @@ const MentorshipPaymentPage = () => {
               <div className="mb-6">
                 <Label className="text-base font-medium mb-3 block">পেমেন্ট মেথড</Label>
                 <RadioGroup
-                  value={paymentMethod}
-                  onValueChange={(v: "bkash" | "nagad" | "rocket") => setPaymentMethod(v)}
-                  className="grid grid-cols-3 gap-3"
+                  value={selectedMethodId}
+                  onValueChange={setSelectedMethodId}
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-3"
                 >
-                  {(["bkash", "nagad", "rocket"] as const).map((method) => (
+                  {paymentMethods.map((method) => (
                     <Label
-                      key={method}
+                      key={method.id}
                       className={`flex items-center justify-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        paymentMethod === method
+                        selectedMethodId === method.id
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
                       }`}
                     >
-                      <RadioGroupItem value={method} className="sr-only" />
-                      <span className="font-medium capitalize">{method}</span>
+                      <RadioGroupItem value={method.id} className="sr-only" />
+                      <span className="font-medium text-sm text-center">{method.name}</span>
                     </Label>
                   ))}
                 </RadioGroup>
               </div>
 
               {/* Payment Instructions */}
-              <div className="bg-secondary/30 p-4 rounded-lg mb-6">
-                <p className="font-medium mb-3">পেমেন্ট স্টেপস:</p>
-                <ol className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2">
-                    <span className="bg-primary text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0">১</span>
-                    <span>নিচের নম্বরে <strong>৳{price}</strong> Send Money করুন</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="bg-primary text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0">২</span>
-                    <span>Transaction ID এবং আপনার নম্বর নিচে দিন</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="bg-primary text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0">৩</span>
-                    <span>আমরা verify করে আপনাকে WhatsApp এ জানাব</span>
-                  </li>
-                </ol>
-              </div>
+              {selectedMethod?.instructions && (
+                <div className="bg-secondary/30 p-4 rounded-lg mb-6">
+                  <p className="font-medium mb-2">নির্দেশনা:</p>
+                  <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
+                </div>
+              )}
 
               {/* Payment Number */}
-              <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg mb-6">
-                <p className="text-sm text-muted-foreground mb-1">
-                  {paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)} নম্বর:
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">
-                    {PAYMENT_NUMBERS[paymentMethod]}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyNumber(PAYMENT_NUMBERS[paymentMethod])}
-                  >
-                    <Copy className="h-4 w-4" />
-                    Copy
-                  </Button>
+              {selectedMethod?.account_number && (
+                <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg mb-6">
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {selectedMethod.name} নম্বর:
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-primary">
+                      {selectedMethod.account_number}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyNumber(selectedMethod.account_number)}
+                    >
+                      <Copy className="h-4 w-4" />
+                      Copy
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Amount: ৳{price} {selectedMethod.account_name && `(${selectedMethod.account_name})`}
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Amount: ৳{price} (Personal)
-                </p>
-              </div>
+              )}
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -236,7 +276,7 @@ const MentorshipPaymentPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="senderNumber">আপনার {paymentMethod} নম্বর</Label>
+                  <Label htmlFor="senderNumber">আপনার নম্বর</Label>
                   <Input
                     id="senderNumber"
                     placeholder="01XXXXXXXXX"
@@ -280,7 +320,7 @@ const MentorshipPaymentPage = () => {
                 <p className="text-sm"><strong>সেশন:</strong> {SESSION_LABELS[sessionType]}</p>
                 <p className="text-sm"><strong>Transaction ID:</strong> {transactionId}</p>
                 <p className="text-sm"><strong>Amount:</strong> ৳{price}</p>
-                <p className="text-sm"><strong>Method:</strong> {paymentMethod}</p>
+                <p className="text-sm"><strong>Method:</strong> {selectedMethod?.name}</p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">

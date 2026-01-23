@@ -420,6 +420,48 @@ export type Database = {
           },
         ]
       }
+      payment_methods: {
+        Row: {
+          account_name: string | null
+          account_number: string | null
+          created_at: string
+          display_order: number
+          id: string
+          instructions: string | null
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          account_name?: string | null
+          account_number?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          instructions?: string | null
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          account_name?: string | null
+          account_number?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          instructions?: string | null
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount: number

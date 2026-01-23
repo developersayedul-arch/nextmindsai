@@ -13,7 +13,8 @@ import {
   TrendingUp,
   GraduationCap,
   CreditCard,
-  Radar
+  Radar,
+  Wallet
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,6 +51,11 @@ const menuItems = [
     title: "পেমেন্ট", 
     url: "/admin/payments", 
     icon: CreditCard
+  },
+  { 
+    title: "পেমেন্ট মেথড", 
+    url: "/admin/payment-methods", 
+    icon: Wallet
   },
   { 
     title: "ট্র্যাকিং", 
