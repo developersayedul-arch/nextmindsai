@@ -11,7 +11,9 @@ import {
   Target,
   Bell,
   TrendingUp,
-  GraduationCap
+  GraduationCap,
+  CreditCard,
+  Radar
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,6 +45,16 @@ const menuItems = [
     title: "ফলো-আপ", 
     url: "/admin/follow-ups", 
     icon: Bell
+  },
+  { 
+    title: "পেমেন্ট", 
+    url: "/admin/payments", 
+    icon: CreditCard
+  },
+  { 
+    title: "ট্র্যাকিং", 
+    url: "/admin/tracking", 
+    icon: Radar
   },
   { 
     title: "এনালিটিক্স", 

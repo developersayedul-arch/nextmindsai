@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useLeadTracking } from "@/hooks/useLeadTracking";
+import { useAnonymousTracking } from "@/hooks/useAnonymousTracking";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,6 +34,15 @@ const AnalyzePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { trackLead, markLeadCompleted } = useLeadTracking();
+  const { 
+    trackFormStart, 
+    trackBusinessType, 
+    trackBusinessIdea, 
+    trackBudget, 
+    trackLocation, 
+    trackWhatsApp,
+    markAsCompleted 
+  } = useAnonymousTracking();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<BusinessFormData>({
     businessIdea: "",
@@ -43,10 +53,11 @@ const AnalyzePage = () => {
   });
   const [whatsappError, setWhatsappError] = useState<string>("");
 
-  // Track form interactions for lead capture
+  // Track form interactions for lead capture and anonymous tracking
   useEffect(() => {
     trackLead({ form_step: "started" });
-  }, []);
+    trackFormStart();
+  }, [trackFormStart]);
 
   // Track when user fills in WhatsApp number
   const handleWhatsAppChange = (value: string) => {
@@ -58,6 +69,7 @@ const AnalyzePage = () => {
         whatsapp_number: value,
         form_step: "whatsapp_entered"
       });
+      trackWhatsApp(value);
     }
   };
 
@@ -70,6 +82,27 @@ const AnalyzePage = () => {
         business_idea: value,
         form_step: "idea_entered"
       });
+      trackBusinessIdea(value);
+    }
+  };
+
+  // Track business type change
+  const handleBusinessTypeChange = (value: "online" | "offline" | "both") => {
+    setFormData({ ...formData, businessType: value });
+    trackBusinessType(value);
+  };
+
+  // Track budget change
+  const handleBudgetChange = (value: "under10k" | "10k-50k" | "above50k") => {
+    setFormData({ ...formData, budgetRange: value });
+    trackBudget(value);
+  };
+
+  // Track location change
+  const handleLocationChange = (value: string) => {
+    setFormData({ ...formData, location: value });
+    if (value.length > 2) {
+      trackLocation(value);
     }
   };
 
@@ -147,9 +180,11 @@ const AnalyzePage = () => {
 
         // Mark lead as completed
         markLeadCompleted(user.id);
+        markAsCompleted(user.id);
       } else {
         // Mark lead as completed even without user
         markLeadCompleted();
+        markAsCompleted();
       }
 
       navigate("/results");
@@ -197,9 +232,7 @@ const AnalyzePage = () => {
               <Label className="text-base font-medium">Business Type</Label>
               <RadioGroup
                 value={formData.businessType}
-                onValueChange={(value: "online" | "offline" | "both") => 
-                  setFormData({ ...formData, businessType: value })
-                }
+                onValueChange={handleBusinessTypeChange}
                 className="grid grid-cols-3 gap-4"
               >
                 {[
@@ -227,9 +260,7 @@ const AnalyzePage = () => {
               <Label className="text-base font-medium">Budget Range</Label>
               <RadioGroup
                 value={formData.budgetRange}
-                onValueChange={(value: "under10k" | "10k-50k" | "above50k") => 
-                  setFormData({ ...formData, budgetRange: value })
-                }
+                onValueChange={handleBudgetChange}
                 className="grid grid-cols-1 sm:grid-cols-3 gap-4"
               >
                 {[
@@ -281,7 +312,7 @@ const AnalyzePage = () => {
                 id="location"
                 placeholder="যেমন: ঢাকা, চট্টগ্রাম, রাজশাহী..."
                 value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                onChange={(e) => handleLocationChange(e.target.value)}
               />
             </div>
 
