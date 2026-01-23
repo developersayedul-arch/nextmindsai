@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Sparkles, User, LogOut, History } from "lucide-react";
+import { useAdminRole } from "@/hooks/useAdminRole";
+import { Sparkles, User, LogOut, History, Shield } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,7 @@ import {
 const Header = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdminRole();
   
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -48,6 +50,15 @@ const Header = () => {
               History
             </Link>
           )}
+          {isAdmin && (
+            <Link 
+              to="/admin" 
+              className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${location.pathname === '/admin' ? 'text-primary' : 'text-muted-foreground'}`}
+            >
+              <Shield className="h-4 w-4" />
+              Admin
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -69,6 +80,14 @@ const Header = () => {
                       My Analyses
                     </Link>
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} className="text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />

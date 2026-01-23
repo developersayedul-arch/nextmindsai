@@ -56,6 +56,100 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          budget_range: string | null
+          business_idea: string | null
+          business_type: string | null
+          created_at: string
+          form_step: string | null
+          id: string
+          is_completed: boolean | null
+          location: string | null
+          session_id: string | null
+          updated_at: string
+          user_id: string | null
+          visitor_id: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          business_idea?: string | null
+          business_type?: string | null
+          created_at?: string
+          form_step?: string | null
+          id?: string
+          is_completed?: boolean | null
+          location?: string | null
+          session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+          visitor_id?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          business_idea?: string | null
+          business_type?: string | null
+          created_at?: string
+          form_step?: string | null
+          id?: string
+          is_completed?: boolean | null
+          location?: string | null
+          session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+          visitor_id?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "visitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_views: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          page_path: string
+          page_title: string | null
+          session_id: string
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          page_path: string
+          page_title?: string | null
+          session_id: string
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          page_path?: string
+          page_title?: string | null
+          session_id?: string
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_views_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "visitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -174,15 +268,87 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      visitors: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          ip_address: string | null
+          landing_page: string | null
+          os: string | null
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          landing_page?: string | null
+          os?: string | null
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          landing_page?: string | null
+          os?: string | null
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -309,6 +475,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

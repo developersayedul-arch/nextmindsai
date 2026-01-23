@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useLeadTracking } from "@/hooks/useLeadTracking";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ const validateWhatsAppNumber = (number: string): boolean => {
 const AnalyzePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { trackLead, markLeadCompleted } = useLeadTracking();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<BusinessFormData>({
     businessIdea: "",
@@ -40,6 +42,36 @@ const AnalyzePage = () => {
     whatsappNumber: ""
   });
   const [whatsappError, setWhatsappError] = useState<string>("");
+
+  // Track form interactions for lead capture
+  useEffect(() => {
+    trackLead({ form_step: "started" });
+  }, []);
+
+  // Track when user fills in WhatsApp number
+  const handleWhatsAppChange = (value: string) => {
+    setFormData({ ...formData, whatsappNumber: value });
+    if (whatsappError) setWhatsappError("");
+    
+    if (value.length >= 11) {
+      trackLead({ 
+        whatsapp_number: value,
+        form_step: "whatsapp_entered"
+      });
+    }
+  };
+
+  // Track when user fills in business idea
+  const handleBusinessIdeaChange = (value: string) => {
+    setFormData({ ...formData, businessIdea: value });
+    
+    if (value.length > 20) {
+      trackLead({ 
+        business_idea: value,
+        form_step: "idea_entered"
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +90,16 @@ const AnalyzePage = () => {
     setWhatsappError("");
     
     if (!formData.businessIdea.trim()) return;
+
+    // Track full form data
+    trackLead({
+      whatsapp_number: formData.whatsappNumber,
+      business_idea: formData.businessIdea,
+      business_type: formData.businessType,
+      budget_range: formData.budgetRange,
+      location: formData.location || undefined,
+      form_step: "submitting"
+    });
 
     setIsLoading(true);
 
@@ -102,6 +144,12 @@ const AnalyzePage = () => {
         if (!dbError && analysisRecord) {
           sessionStorage.setItem("analysisId", analysisRecord.id);
         }
+
+        // Mark lead as completed
+        markLeadCompleted(user.id);
+      } else {
+        // Mark lead as completed even without user
+        markLeadCompleted();
       }
 
       navigate("/results");
@@ -137,7 +185,7 @@ const AnalyzePage = () => {
                 placeholder="উদাহরণ: আমি অনলাইনে ঘরে তৈরি আচার বিক্রি করতে চাই। ঢাকার বাইরে delivery দিতে চাই..."
                 className="min-h-[150px] text-base"
                 value={formData.businessIdea}
-                onChange={(e) => setFormData({ ...formData, businessIdea: e.target.value })}
+                onChange={(e) => handleBusinessIdeaChange(e.target.value)}
                 required
               />
               <p className="text-sm text-muted-foreground">
@@ -213,10 +261,7 @@ const AnalyzePage = () => {
                 id="whatsappNumber"
                 placeholder="যেমন: 01712345678"
                 value={formData.whatsappNumber}
-                onChange={(e) => {
-                  setFormData({ ...formData, whatsappNumber: e.target.value });
-                  if (whatsappError) setWhatsappError("");
-                }}
+                onChange={(e) => handleWhatsAppChange(e.target.value)}
                 className={whatsappError ? "border-destructive" : ""}
                 required
               />
