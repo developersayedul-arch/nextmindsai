@@ -16,7 +16,17 @@ export interface BusinessFormData {
   businessType: "online" | "offline" | "both";
   budgetRange: "under10k" | "10k-50k" | "above50k";
   location: string;
+  whatsappNumber: string;
 }
+
+// Validate Bangladesh WhatsApp number format
+const validateWhatsAppNumber = (number: string): boolean => {
+  // Remove spaces and dashes
+  const cleaned = number.replace(/[\s-]/g, '');
+  // Bangladesh number: starts with 01, followed by 9 digits OR +880 followed by 10 digits
+  const bdPattern = /^(01[3-9]\d{8}|(\+?880)?1[3-9]\d{8})$/;
+  return bdPattern.test(cleaned);
+};
 
 const AnalyzePage = () => {
   const navigate = useNavigate();
@@ -26,11 +36,27 @@ const AnalyzePage = () => {
     businessIdea: "",
     businessType: "online",
     budgetRange: "under10k",
-    location: ""
+    location: "",
+    whatsappNumber: ""
   });
+  const [whatsappError, setWhatsappError] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate WhatsApp number
+    if (!formData.whatsappNumber.trim()) {
+      setWhatsappError("WhatsApp নম্বর দিতে হবে");
+      return;
+    }
+    
+    if (!validateWhatsAppNumber(formData.whatsappNumber)) {
+      setWhatsappError("সঠিক বাংলাদেশী WhatsApp নম্বর দিন (যেমন: 01712345678)");
+      return;
+    }
+    
+    setWhatsappError("");
+    
     if (!formData.businessIdea.trim()) return;
 
     setIsLoading(true);
@@ -66,6 +92,7 @@ const AnalyzePage = () => {
             business_type: formData.businessType,
             budget_range: formData.budgetRange,
             location: formData.location || null,
+            whatsapp_number: formData.whatsappNumber,
             results: data.analysis,
             is_paid: false
           })
@@ -179,6 +206,29 @@ const AnalyzePage = () => {
             </div>
 
             <div className="space-y-3">
+              <Label htmlFor="whatsappNumber" className="text-base font-medium">
+                WhatsApp নম্বর <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="whatsappNumber"
+                placeholder="যেমন: 01712345678"
+                value={formData.whatsappNumber}
+                onChange={(e) => {
+                  setFormData({ ...formData, whatsappNumber: e.target.value });
+                  if (whatsappError) setWhatsappError("");
+                }}
+                className={whatsappError ? "border-destructive" : ""}
+                required
+              />
+              {whatsappError && (
+                <p className="text-sm text-destructive">{whatsappError}</p>
+              )}
+              <p className="text-sm text-muted-foreground">
+                আপনার WhatsApp নম্বর দিন যেখানে আমরা যোগাযোগ করতে পারি
+              </p>
+            </div>
+
+            <div className="space-y-3">
               <Label htmlFor="location" className="text-base font-medium">
                 Location <span className="text-muted-foreground">(optional)</span>
               </Label>
@@ -195,7 +245,7 @@ const AnalyzePage = () => {
               variant="hero" 
               size="xl" 
               className="w-full"
-              disabled={!formData.businessIdea.trim() || isLoading}
+              disabled={!formData.businessIdea.trim() || !formData.whatsappNumber.trim() || isLoading}
             >
               {isLoading ? (
                 <>

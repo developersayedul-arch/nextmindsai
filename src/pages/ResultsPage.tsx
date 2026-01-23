@@ -4,12 +4,6 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { BusinessFormData } from "./AnalyzePage";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
@@ -21,10 +15,9 @@ import {
   AlertCircle,
   Download,
   ArrowRight,
-  Sparkles,
   Target,
   TrendingUp,
-  FileText
+  Loader2
 } from "lucide-react";
 
 // Analysis result type from AI
@@ -73,26 +66,101 @@ interface AnalysisResult {
   };
 }
 
+// Validate analysis data structure
+const validateAnalysisData = (data: unknown): data is AnalysisResult => {
+  if (!data || typeof data !== 'object') return false;
+  
+  const analysis = data as Record<string, unknown>;
+  
+  const requiredSections = [
+    'businessReality',
+    'productDecision', 
+    'sourceGuide',
+    'deliveryPlan',
+    'websiteDecision',
+    'marketingPlan',
+    'actionPlan',
+    'failureWarning'
+  ];
+  
+  return requiredSections.every(section => 
+    analysis[section] && typeof analysis[section] === 'object'
+  );
+};
+
 const ResultsPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<BusinessFormData | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedFormData = sessionStorage.getItem("businessFormData");
-    const storedResults = sessionStorage.getItem("analysisResults");
-    
-    if (!storedFormData || !storedResults) {
-      navigate("/analyze");
-      return;
+    try {
+      const storedFormData = sessionStorage.getItem("businessFormData");
+      const storedResults = sessionStorage.getItem("analysisResults");
+      
+      if (!storedFormData || !storedResults) {
+        navigate("/analyze");
+        return;
+      }
+      
+      const parsedFormData = JSON.parse(storedFormData);
+      const parsedResults = JSON.parse(storedResults);
+      
+      // Validate form data
+      if (!parsedFormData.businessIdea) {
+        setError("Business idea পাওয়া যায়নি। আবার চেষ্টা করুন।");
+        return;
+      }
+      
+      // Validate analysis structure
+      if (!validateAnalysisData(parsedResults)) {
+        setError("Analysis ডেটা সঠিকভাবে load হয়নি। আবার analyze করুন।");
+        return;
+      }
+      
+      setFormData(parsedFormData as BusinessFormData);
+      setAnalysis(parsedResults as AnalysisResult);
+    } catch (parseError) {
+      console.error("Error parsing analysis data:", parseError);
+      setError("ডেটা প্রসেস করতে সমস্যা হয়েছে। আবার analyze করুন।");
     }
-    
-    setFormData(JSON.parse(storedFormData) as BusinessFormData);
-    setAnalysis(JSON.parse(storedResults) as AnalysisResult);
   }, [navigate]);
 
+  // Error state
+  if (error) {
+    return (
+      <Layout>
+        <div className="section-container py-12 md:py-20">
+          <div className="max-w-md mx-auto text-center">
+            <div className="bg-destructive/10 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="h-8 w-8 text-destructive" />
+            </div>
+            <h1 className="text-2xl font-bold mb-2">কিছু ভুল হয়েছে</h1>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <Button variant="hero" asChild>
+              <Link to="/analyze">
+                আবার Analyze করুন
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   if (!analysis || !formData) {
-    return null;
+    return (
+      <Layout>
+        <div className="section-container py-12 md:py-20">
+          <div className="max-w-md mx-auto text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Loading analysis...</p>
+          </div>
+        </div>
+      </Layout>
+    );
   }
 
   const showWebsiteSuggestion = analysis.websiteDecision.verdict !== "NOT NEEDED";

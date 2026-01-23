@@ -26,6 +26,7 @@ export type Database = {
           results: Json | null
           updated_at: string
           user_id: string
+          whatsapp_number: string
         }
         Insert: {
           budget_range: string
@@ -38,6 +39,7 @@ export type Database = {
           results?: Json | null
           updated_at?: string
           user_id: string
+          whatsapp_number: string
         }
         Update: {
           budget_range?: string
@@ -50,6 +52,7 @@ export type Database = {
           results?: Json | null
           updated_at?: string
           user_id?: string
+          whatsapp_number?: string
         }
         Relationships: []
       }
