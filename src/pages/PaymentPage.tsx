@@ -262,7 +262,7 @@ const PaymentPage = () => {
 
               <p className="text-xs text-muted-foreground text-center mt-4 flex items-center justify-center gap-1">
                 <Shield className="h-3 w-3" />
-                Secured by SA Coder
+                Powered by SA Coder
               </p>
             </div>
           ) : (
@@ -295,8 +295,7 @@ const PaymentPage = () => {
           {/* Trust Footer */}
           <div className="text-center mt-8">
             <p className="text-sm text-muted-foreground">
-              Powered by <span className="font-semibold text-foreground">SA Coder</span> | 
-              Developed & Secured by <span className="font-semibold text-foreground">SA Coder</span>
+              Powered by <span className="font-semibold text-foreground">SA Coder</span>
             </p>
           </div>
         </div>

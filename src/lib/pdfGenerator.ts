@@ -202,10 +202,6 @@ export const generateBusinessPDF = (formData: FormData, analysis: AnalysisData):
   doc.setFontSize(12);
   doc.setFont("helvetica", "normal");
   doc.text("Powered by SA Coder", pageWidth / 2, y, { align: "center" });
-  y += 8;
-  doc.text("Developed by SA Coder", pageWidth / 2, y, { align: "center" });
-  y += 8;
-  doc.text("Secured by SA Coder", pageWidth / 2, y, { align: "center" });
 
   // Save
   const filename = `Nextminds-AI-Plan-${new Date().toISOString().split("T")[0]}.pdf`;

@@ -14,9 +14,7 @@ const Footer = () => {
           
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Powered by <span className="font-semibold text-foreground">SA Coder</span> • 
-              Developed by <span className="font-semibold text-foreground">SA Coder</span> • 
-              Secured by <span className="font-semibold text-foreground">SA Coder</span>
+              Powered by <span className="font-semibold text-foreground">SA Coder</span>
             </p>
           </div>
 

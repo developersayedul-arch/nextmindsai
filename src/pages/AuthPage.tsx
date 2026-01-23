@@ -202,8 +202,7 @@ const AuthPage = () => {
 
           {/* Trust Footer */}
           <p className="text-center text-sm text-muted-foreground mt-8">
-            Powered by <span className="font-semibold">SA Coder</span> • 
-            Secured by <span className="font-semibold">SA Coder</span>
+            Powered by <span className="font-semibold">SA Coder</span>
           </p>
         </div>
       </div>

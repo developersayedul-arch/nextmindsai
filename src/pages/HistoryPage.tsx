@@ -216,8 +216,7 @@ const HistoryPage = () => {
           {/* Trust Footer */}
           <div className="text-center mt-12">
             <p className="text-sm text-muted-foreground">
-              Powered by <span className="font-semibold text-foreground">SA Coder</span> | 
-              Developed & Secured by <span className="font-semibold text-foreground">SA Coder</span>
+              Powered by <span className="font-semibold text-foreground">SA Coder</span>
             </p>
           </div>
         </div>
