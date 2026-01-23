@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_login_attempts: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: string | null
+          os: string | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          os?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          os?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      admin_whitelist: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+        }
+        Relationships: []
+      }
       analyses: {
         Row: {
           budget_range: string
@@ -339,6 +408,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_admin_rate_limit: { Args: { _email: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -346,6 +416,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin_whitelisted: { Args: { _email: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

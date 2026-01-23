@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminRole } from "@/hooks/useAdminRole";
-import { Loader2, Shield, ShieldAlert } from "lucide-react";
+import { Loader2, Shield, ShieldAlert, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminAnalyses from "@/components/admin/AdminAnalyses";
 import AdminLeads from "@/components/admin/AdminLeads";
 import AdminVisitors from "@/components/admin/AdminVisitors";
+import AdminSecurity from "@/components/admin/AdminSecurity";
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -34,9 +34,15 @@ const AdminPage = () => {
             <ShieldAlert className="h-16 w-16 text-destructive mx-auto mb-4" />
             <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
             <p className="text-muted-foreground mb-6">
-              আপনাকে login করতে হবে
+              Admin access প্রয়োজন
             </p>
-            <Button onClick={() => navigate("/auth")}>Login</Button>
+            <Button 
+              onClick={() => navigate("/admin-login")}
+              className="bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700"
+            >
+              <Lock className="h-4 w-4 mr-2" />
+              Admin Login
+            </Button>
           </div>
         </div>
       </Layout>
@@ -76,11 +82,15 @@ const AdminPage = () => {
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="analyses">Analyses</TabsTrigger>
             <TabsTrigger value="leads">Leads</TabsTrigger>
             <TabsTrigger value="visitors">Visitors</TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-1">
+              <Lock className="h-3 w-3" />
+              Security
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard">
@@ -97,6 +107,10 @@ const AdminPage = () => {
 
           <TabsContent value="visitors">
             <AdminVisitors />
+          </TabsContent>
+
+          <TabsContent value="security">
+            <AdminSecurity />
           </TabsContent>
         </Tabs>
       </div>

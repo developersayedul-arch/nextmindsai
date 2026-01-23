@@ -52,8 +52,8 @@ const Header = () => {
           )}
           {isAdmin && (
             <Link 
-              to="/admin" 
-              className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${location.pathname === '/admin' ? 'text-primary' : 'text-muted-foreground'}`}
+              to="/admin-login" 
+              className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${location.pathname.startsWith('/admin') ? 'text-primary' : 'text-muted-foreground'}`}
             >
               <Shield className="h-4 w-4" />
               Admin
@@ -82,7 +82,7 @@ const Header = () => {
                   </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center gap-2">
+                      <Link to="/admin-login" className="flex items-center gap-2">
                         <Shield className="h-4 w-4" />
                         Admin Dashboard
                       </Link>

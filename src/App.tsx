@@ -14,6 +14,7 @@ import AuthPage from "./pages/AuthPage";
 import HistoryPage from "./pages/HistoryPage";
 import PaymentPage from "./pages/PaymentPage";
 import AdminPage from "./pages/AdminPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
