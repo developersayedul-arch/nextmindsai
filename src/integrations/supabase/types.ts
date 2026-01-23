@@ -125,6 +125,71 @@ export type Database = {
         }
         Relationships: []
       }
+      anonymous_analyses: {
+        Row: {
+          budget_range: string | null
+          business_idea: string | null
+          business_type: string | null
+          converted_at: string | null
+          converted_to_user: boolean | null
+          converted_user_id: string | null
+          created_at: string
+          form_step: string | null
+          id: string
+          ip_address: string | null
+          location: string | null
+          session_id: string
+          updated_at: string
+          user_agent: string | null
+          visitor_id: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          business_idea?: string | null
+          business_type?: string | null
+          converted_at?: string | null
+          converted_to_user?: boolean | null
+          converted_user_id?: string | null
+          created_at?: string
+          form_step?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          session_id: string
+          updated_at?: string
+          user_agent?: string | null
+          visitor_id?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          business_idea?: string | null
+          business_type?: string | null
+          converted_at?: string | null
+          converted_to_user?: boolean | null
+          converted_user_id?: string | null
+          created_at?: string
+          form_step?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          session_id?: string
+          updated_at?: string
+          user_agent?: string | null
+          visitor_id?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymous_analyses_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "visitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       follow_up_reminders: {
         Row: {
           completed_at: string | null

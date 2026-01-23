@@ -25,6 +25,8 @@ import AdminSecurityPage from "./pages/admin/AdminSecurityPage";
 import AdminFollowUpsPage from "./pages/admin/AdminFollowUpsPage";
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import AdminMentorshipPage from "./pages/admin/AdminMentorshipPage";
+import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
+import AdminTrackingPage from "./pages/admin/AdminTrackingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +59,8 @@ const App = () => (
             <Route path="/admin/follow-ups" element={<AdminFollowUpsPage />} />
             <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
             <Route path="/admin/mentorship" element={<AdminMentorshipPage />} />
+            <Route path="/admin/payments" element={<AdminPaymentsPage />} />
+            <Route path="/admin/tracking" element={<AdminTrackingPage />} />
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
