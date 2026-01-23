@@ -1,1 +1,10 @@
 project_id = "jzlqboqeoiwpmopqvfbc"
+
+[functions.analyze-business]
+verify_jwt = false
+
+[functions.dodo-checkout]
+verify_jwt = false
+
+[functions.dodo-webhook]
+verify_jwt = false

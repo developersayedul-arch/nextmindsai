@@ -72,7 +72,8 @@ interface PaymentMethod {
 const PAYMENT_TYPES = [
   { value: "mobile_banking", label: "মোবাইল ব্যাংকিং", icon: Smartphone },
   { value: "bank", label: "ব্যাংক ট্রান্সফার", icon: Building2 },
-  { value: "gateway", label: "পেমেন্ট গেটওয়ে", icon: Globe },
+  { value: "gateway", label: "পেমেন্ট গেটওয়ে (Manual)", icon: Globe },
+  { value: "payment_gateway", label: "পেমেন্ট গেটওয়ে (Online)", icon: CreditCard },
 ];
 
 const AdminPaymentMethods = () => {
