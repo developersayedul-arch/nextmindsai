@@ -155,12 +155,12 @@ const AdminLeads = () => {
     <Card>
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <CardTitle>All Leads ({leads.length})</CardTitle>
+          <CardTitle>সব লিড ({leads.length})</CardTitle>
           <div className="flex flex-wrap gap-2">
             <div className="relative flex-1 sm:w-48">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search..."
+                placeholder="সার্চ করুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9"
@@ -172,26 +172,26 @@ const AdminLeads = () => {
                 size="sm"
                 onClick={() => setFilter("all")}
               >
-                All
+                সব
               </Button>
               <Button
                 variant={filter === "completed" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFilter("completed")}
               >
-                Completed
+                সম্পূর্ণ
               </Button>
               <Button
                 variant={filter === "incomplete" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFilter("incomplete")}
               >
-                Incomplete
+                অসম্পূর্ণ
               </Button>
             </div>
             <Button variant="outline" onClick={exportToCSV}>
               <Download className="h-4 w-4 mr-2" />
-              Export
+              এক্সপোর্ট
             </Button>
           </div>
         </div>
@@ -201,19 +201,19 @@ const AdminLeads = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
+                <TableHead>তারিখ</TableHead>
                 <TableHead>WhatsApp</TableHead>
-                <TableHead>Business Idea</TableHead>
-                <TableHead>Form Step</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>বিজনেস আইডিয়া</TableHead>
+                <TableHead>ফর্ম স্টেপ</TableHead>
+                <TableHead>স্ট্যাটাস</TableHead>
+                <TableHead className="text-right">অ্যাকশন</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredLeads.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    No leads found
+                    কোনো লিড পাওয়া যায়নি
                   </TableCell>
                 </TableRow>
               ) : (
@@ -228,7 +228,7 @@ const AdminLeads = () => {
                           href={`https://wa.me/88${lead.whatsapp_number}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-green-600 hover:underline"
+                          className="flex items-center gap-1 text-green-500 hover:underline"
                         >
                           <Phone className="h-3 w-3" />
                           {lead.whatsapp_number}
@@ -242,17 +242,17 @@ const AdminLeads = () => {
                     </TableCell>
                     <TableCell>
                       <span className="px-2 py-1 bg-secondary rounded text-xs">
-                        {lead.form_step || "started"}
+                        {lead.form_step || "শুরু"}
                       </span>
                     </TableCell>
                     <TableCell>
                       {lead.is_completed ? (
-                        <span className="flex items-center gap-1 text-green-600">
-                          <CheckCircle className="h-4 w-4" /> Completed
+                        <span className="flex items-center gap-1 text-green-500">
+                          <CheckCircle className="h-4 w-4" /> সম্পূর্ণ
                         </span>
                       ) : (
                         <span className="flex items-center gap-1 text-orange-500">
-                          <XCircle className="h-4 w-4" /> Incomplete
+                          <XCircle className="h-4 w-4" /> অসম্পূর্ণ
                         </span>
                       )}
                     </TableCell>
