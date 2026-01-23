@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -38,9 +39,12 @@ import {
   Video,
   MessageCircle,
   ExternalLink,
-  Edit
+  Edit,
+  CalendarDays,
+  List
 } from "lucide-react";
 import { toast } from "sonner";
+import MentorshipCalendar from "./MentorshipCalendar";
 
 interface MentorshipSession {
   id: string;
@@ -258,25 +262,46 @@ const AdminMentorship = () => {
         </Card>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2">
-        {(["all", "pending", "confirmed", "completed"] as const).map((f) => (
-          <Button
-            key={f}
-            variant={filter === f ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilter(f)}
-          >
-            {f === "all" ? "সব" : f === "pending" ? "পেন্ডিং" : f === "confirmed" ? "নিশ্চিত" : "সম্পন্ন"}
-          </Button>
-        ))}
-      </div>
+      {/* Calendar & List Tabs */}
+      <Tabs defaultValue="calendar" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="calendar" className="flex items-center gap-2">
+            <CalendarDays className="h-4 w-4" />
+            ক্যালেন্ডার ভিউ
+          </TabsTrigger>
+          <TabsTrigger value="list" className="flex items-center gap-2">
+            <List className="h-4 w-4" />
+            লিস্ট ভিউ
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Sessions Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">মেন্টরশিপ সেশন ({filteredSessions.length})</CardTitle>
-        </CardHeader>
+        <TabsContent value="calendar">
+          <MentorshipCalendar 
+            sessions={sessions} 
+            onSessionClick={(session) => setEditSession(session)}
+          />
+        </TabsContent>
+
+        <TabsContent value="list" className="space-y-4">
+          {/* Filters */}
+          <div className="flex gap-2">
+            {(["all", "pending", "confirmed", "completed"] as const).map((f) => (
+              <Button
+                key={f}
+                variant={filter === f ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(f)}
+              >
+                {f === "all" ? "সব" : f === "pending" ? "পেন্ডিং" : f === "confirmed" ? "নিশ্চিত" : "সম্পন্ন"}
+              </Button>
+            ))}
+          </div>
+
+          {/* Sessions Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">মেন্টরশিপ সেশন ({filteredSessions.length})</CardTitle>
+            </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
@@ -356,8 +381,10 @@ const AdminMentorship = () => {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Edit Dialog */}
       <Dialog open={!!editSession} onOpenChange={() => setEditSession(null)}>

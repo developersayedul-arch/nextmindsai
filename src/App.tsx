@@ -14,6 +14,7 @@ import AuthPage from "./pages/AuthPage";
 import HistoryPage from "./pages/HistoryPage";
 import PaymentPage from "./pages/PaymentPage";
 import MentorshipPage from "./pages/MentorshipPage";
+import MentorshipPaymentPage from "./pages/MentorshipPaymentPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminLeadsPage from "./pages/admin/AdminLeadsPage";
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/mentorship" element={<MentorshipPage />} />
+            <Route path="/mentorship/payment" element={<MentorshipPaymentPage />} />
             <Route path="/admin" element={<AdminDashboardPage />} />
             <Route path="/admin/leads" element={<AdminLeadsPage />} />
             <Route path="/admin/analyses" element={<AdminAnalysesPage />} />

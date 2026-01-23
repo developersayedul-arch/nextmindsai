@@ -109,7 +109,7 @@ const MentorshipPage = () => {
       const sessionDate = new Date(`${formData.preferredDate}T${formData.preferredTime}`);
       const selectedSession = sessionTypes.find(s => s.value === selectedType);
 
-      const { error } = await supabase
+      const { data: session, error } = await supabase
         .from("mentorship_sessions")
         .insert({
           user_id: user?.id || null,
@@ -122,12 +122,16 @@ const MentorshipPage = () => {
           price: selectedSession?.price || 499,
           status: "pending",
           payment_status: "unpaid"
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
-      toast.success("বুকিং সফল হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।");
-      navigate("/");
+      toast.success("বুকিং সফল হয়েছে! এখন পেমেন্ট করুন।");
+      
+      // Navigate to payment page with session info
+      navigate(`/mentorship/payment?sessionId=${session.id}&type=${selectedType}`);
     } catch (err) {
       console.error("Error booking session:", err);
       toast.error("বুকিং করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
@@ -339,11 +343,15 @@ const MentorshipPage = () => {
                   "বুক হচ্ছে..."
                 ) : (
                   <>
-                    সেশন বুক করুন
+                    বুক করুন ও পেমেন্ট করুন
                     <ArrowRight className="h-5 w-5" />
                   </>
                 )}
               </Button>
+
+              <p className="text-xs text-center text-muted-foreground mt-2">
+                বুক করার পর bKash/Nagad দিয়ে পেমেন্ট করতে পারবেন
+              </p>
             </CardContent>
           </Card>
         )}
