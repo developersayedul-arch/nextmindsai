@@ -13,6 +13,7 @@ import DownloadPage from "./pages/DownloadPage";
 import AuthPage from "./pages/AuthPage";
 import HistoryPage from "./pages/HistoryPage";
 import PaymentPage from "./pages/PaymentPage";
+import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
