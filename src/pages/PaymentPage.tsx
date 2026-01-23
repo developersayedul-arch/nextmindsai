@@ -68,8 +68,10 @@ const PaymentPage = () => {
         .eq("is_active", true)
         .order("display_order", { ascending: true });
       if (error) throw error;
+      console.log("Payment methods loaded:", data);
       return data as PaymentMethod[];
     },
+    staleTime: 0, // Always refetch to get latest payment methods
   });
 
   // Set first method as default when loaded
@@ -94,7 +96,8 @@ const PaymentPage = () => {
   };
 
   // Check if selected method is a payment gateway (like DodoPayment)
-  const isPaymentGateway = selectedMethod?.type === 'payment_gateway';
+  // Use explicit check for both the method and its type
+  const isPaymentGateway = Boolean(selectedMethod && selectedMethod.type === 'payment_gateway');
 
   // Handle DodoPayment checkout
   const handleDodoCheckout = async () => {
