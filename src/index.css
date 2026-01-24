@@ -209,18 +209,27 @@
 
   /* Text Gradients */
   .text-gradient {
-    @apply bg-clip-text text-transparent;
     background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
   }
 
   .text-gradient-coral {
-    @apply bg-clip-text text-transparent;
-    background: var(--gradient-coral);
+    background: linear-gradient(135deg, hsl(12 85% 60%) 0%, hsl(20 90% 55%) 50%, hsl(8 80% 55%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
   }
 
   .text-gradient-gold {
-    @apply bg-clip-text text-transparent;
-    background: var(--gradient-coral);
+    background: linear-gradient(135deg, hsl(12 85% 60%) 0%, hsl(20 90% 55%) 50%, hsl(8 80% 55%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
   }
 
   /* Container */
