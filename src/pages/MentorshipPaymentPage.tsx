@@ -52,11 +52,10 @@ const SESSION_LABELS: Record<string, string> = {
 
 // DodoPayment product IDs for mentorship
 const DODO_MENTORSHIP_PRODUCTS: Record<string, string> = {
-  "business-idea": "prod_mentorship_idea",
-  "marketing": "prod_mentorship_marketing",
-  "scaling": "prod_mentorship_scaling",
-  "full-consultation": "prod_mentorship_full",
-  "tech-guidance": "prod_mentorship_tech"
+  "business-idea": "pdt_0NWwi9AZrEYPe2tgligDD",
+  "marketing": "pdt_0NWwiKSX8HIt9J3XMKwTc",
+  "financial": "pdt_0NWwiTNwN7L3sBq2vRVLT",
+  "general": "pdt_0NWwin55LtzECFv82lDrN"
 };
 
 const MentorshipPaymentPage = () => {
