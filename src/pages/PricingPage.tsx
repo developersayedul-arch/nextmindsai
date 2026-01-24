@@ -169,7 +169,17 @@ const PricingPage = () => {
               variants={itemVariants}
               className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
             >
-              আপনার জন্য <span className="text-gradient-gold">Perfect Plan</span>
+              আপনার জন্য{" "}
+              <span 
+                style={{
+                  background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Perfect Plan
+              </span>
             </motion.h1>
             
             <motion.p 
@@ -287,7 +297,17 @@ const PricingPage = () => {
               Value
             </span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              আপনি কি <span className="text-gradient-gold">পাচ্ছেন?</span>
+              আপনি কি{" "}
+              <span 
+                style={{
+                  background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                পাচ্ছেন?
+              </span>
             </h2>
           </motion.div>
 
@@ -334,7 +354,17 @@ const PricingPage = () => {
               FAQ
             </span>
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              সাধারণ <span className="text-gradient-gold">প্রশ্নসমূহ</span>
+              সাধারণ{" "}
+              <span 
+                style={{
+                  background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                প্রশ্নসমূহ
+              </span>
             </h2>
           </motion.div>
 

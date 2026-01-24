@@ -374,25 +374,45 @@ const Index = () => {
       </section>
 
       {/* METRICS - Horizontal Card Strip */}
-      <section className="py-6 bg-primary">
-        <div className="section-container">
-          <div className="flex flex-wrap justify-center md:justify-between items-center gap-6 md:gap-4">
+      <section className="py-8 bg-primary relative overflow-hidden">
+        {/* Animated background pattern */}
+        <motion.div 
+          className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)]"
+          animate={{ x: ['-100%', '100%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+        
+        <div className="section-container relative z-10">
+          <div className="flex flex-wrap justify-center md:justify-between items-center gap-8 md:gap-4">
             {metrics.map((metric, i) => (
               <motion.div 
                 key={i}
-                className="flex items-center gap-3 px-4"
+                className="flex items-center gap-4 px-4 group"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.05 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                  <metric.icon className="h-5 w-5 text-white" />
-                </div>
+                <motion.div 
+                  className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors"
+                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <metric.icon className="h-6 w-6 text-white" />
+                </motion.div>
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-white">{metric.value}</span>
-                    <span className="text-xs text-white/60 font-medium">{metric.trend}</span>
+                    <motion.span 
+                      className="text-3xl font-bold text-white"
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.15, type: "spring" }}
+                    >
+                      {metric.value}
+                    </motion.span>
+                    <span className="text-xs text-accent font-semibold px-1.5 py-0.5 bg-accent/20 rounded">{metric.trend}</span>
                   </div>
                   <span className="text-sm text-white/70">{metric.label}</span>
                 </div>
@@ -403,7 +423,8 @@ const Index = () => {
       </section>
 
       {/* FEATURES - Bento Grid */}
-      <section className="py-24 md:py-32 bg-background">
+      <section className="py-24 md:py-32 bg-background relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <div className="section-container">
           <motion.div 
             className="text-center mb-16"
@@ -411,11 +432,24 @@ const Index = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-sm font-medium mb-4">
+            <motion.span 
+              className="inline-block px-4 py-1.5 rounded-full bg-secondary text-sm font-medium mb-4"
+              whileHover={{ scale: 1.05 }}
+            >
               What You Get
-            </span>
+            </motion.span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Complete Business <span className="text-gradient-coral">Toolkit</span>
+              Complete Business{" "}
+              <span 
+                style={{
+                  background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Toolkit
+              </span>
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Everything you need to validate and launch your business idea
@@ -434,34 +468,53 @@ const Index = () => {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                whileHover={{ y: -4 }}
-                className={`group relative p-6 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all ${i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}`}
+                whileHover={{ y: -6, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`group relative p-6 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden ${i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}`}
               >
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
                 {/* Icon */}
-                <div className={`w-12 h-12 rounded-xl gradient-coral flex items-center justify-center mb-4 ${i === 0 ? 'w-16 h-16' : ''}`}>
+                <motion.div 
+                  className={`relative w-12 h-12 rounded-xl gradient-coral flex items-center justify-center mb-4 shadow-md ${i === 0 ? 'w-16 h-16' : ''}`}
+                  whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
+                >
                   <feature.icon className={`text-white ${i === 0 ? 'h-8 w-8' : 'h-6 w-6'}`} />
-                </div>
+                </motion.div>
 
                 {/* Content */}
-                <div className="mb-4">
+                <div className="relative mb-4">
                   <span className="text-xs text-muted-foreground uppercase tracking-wide">{feature.subtitle}</span>
-                  <h3 className={`font-bold mt-1 ${i === 0 ? 'text-2xl' : 'text-lg'}`}>{feature.title}</h3>
+                  <h3 className={`font-bold mt-1 group-hover:text-primary transition-colors ${i === 0 ? 'text-2xl' : 'text-lg'}`}>{feature.title}</h3>
                 </div>
                 
-                <p className={`text-muted-foreground mb-4 ${i === 0 ? 'text-base' : 'text-sm'}`}>
+                <p className={`relative text-muted-foreground mb-4 ${i === 0 ? 'text-base' : 'text-sm'}`}>
                   {feature.description}
                 </p>
 
-                {/* Stat */}
-                <div className="flex items-baseline gap-1">
-                  <span className={`font-bold text-accent ${i === 0 ? 'text-3xl' : 'text-xl'}`}>{feature.stat}</span>
+                {/* Stat with animation */}
+                <div className="relative flex items-baseline gap-1">
+                  <motion.span 
+                    className={`font-bold text-accent ${i === 0 ? 'text-3xl' : 'text-xl'}`}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 + i * 0.1, type: "spring" }}
+                  >
+                    {feature.stat}
+                  </motion.span>
                   <span className="text-xs text-muted-foreground">{feature.statLabel}</span>
                 </div>
 
-                {/* Hover Arrow */}
-                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Hover Arrow with animation */}
+                <motion.div 
+                  className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all"
+                  initial={{ x: -5, y: 5 }}
+                  whileHover={{ x: 0, y: 0 }}
+                >
                   <ArrowUpRight className="h-5 w-5 text-primary" />
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </motion.div>
@@ -482,7 +535,17 @@ const Index = () => {
               How It Works
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Three Simple <span className="text-gradient-coral">Steps</span>
+              Three Simple{" "}
+              <span 
+                style={{
+                  background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Steps
+              </span>
             </h2>
           </motion.div>
 
@@ -561,7 +624,16 @@ const Index = () => {
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
                 Real Results from<br />
-                <span className="text-gradient-coral">Real Entrepreneurs</span>
+                <span 
+                  style={{
+                    background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Real Entrepreneurs
+                </span>
               </h2>
             </div>
             <div className="flex gap-1">
@@ -579,39 +651,67 @@ const Index = () => {
             <motion.div
               key={i}
               className="flex-shrink-0 w-[320px] md:w-[380px] snap-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, rotate: -2 }}
+              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+              whileHover={{ y: -8, scale: 1.02 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className="h-full p-6 rounded-2xl border border-border bg-card hover:border-primary/20 transition-colors">
+              <div className="h-full p-6 rounded-2xl border border-border bg-card hover:border-primary/30 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                {/* Hover Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="relative flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full gradient-hero flex items-center justify-center text-white font-bold">
+                    <motion.div 
+                      className="w-12 h-12 rounded-full gradient-hero flex items-center justify-center text-white font-bold shadow-md"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
                       {t.avatar}
-                    </div>
+                    </motion.div>
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="font-semibold">{t.name}</span>
-                        <BadgeCheck className="h-4 w-4 text-accent" />
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                        >
+                          <BadgeCheck className="h-4 w-4 text-accent" />
+                        </motion.div>
                       </div>
                       <span className="text-sm text-muted-foreground">{t.role}</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-accent">{t.revenue}</div>
+                    <motion.div 
+                      className="text-lg font-bold text-accent"
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
+                    >
+                      {t.revenue}
+                    </motion.div>
                     <div className="text-xs text-muted-foreground">Revenue</div>
                   </div>
                 </div>
 
                 {/* Quote */}
-                <p className="text-foreground mb-4 leading-relaxed">"{t.content}"</p>
+                <p className="relative text-foreground mb-4 leading-relaxed">"{t.content}"</p>
 
-                {/* Rating */}
-                <div className="flex gap-0.5">
+                {/* Rating with stagger animation */}
+                <div className="relative flex gap-0.5">
                   {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} className="h-4 w-4 text-accent fill-accent" />
+                    <motion.div
+                      key={j}
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.4 + j * 0.05 }}
+                    >
+                      <Star className="h-4 w-4 text-accent fill-accent" />
+                    </motion.div>
                   ))}
                 </div>
               </div>
