@@ -237,7 +237,16 @@ const Index = () => {
               >
                 <span className="text-foreground">Turn your</span>
                 <br />
-                <span className="text-gradient-coral">Business Idea</span>
+                <span 
+                  style={{
+                    background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Business Idea
+                </span>
                 <br />
                 <span className="text-foreground">into Reality</span>
               </motion.h1>
