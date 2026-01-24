@@ -19,7 +19,6 @@ import {
   TrendingUp,
   Users,
   Award,
-  ChevronDown,
   Sparkles,
   Rocket,
   Brain,
@@ -31,7 +30,14 @@ import {
   Leaf,
   Layers,
   Gem,
-  CircleDot
+  ArrowUpRight,
+  ChevronRight,
+  MousePointer2,
+  Compass,
+  Workflow,
+  CircleCheck,
+  MessageCircle,
+  HelpCircle
 } from "lucide-react";
 import {
   Accordion,
@@ -47,813 +53,612 @@ const Index = () => {
     offset: ["start start", "end start"]
   });
   
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   const features = [
     {
       icon: Brain,
-      title: "Business Reality Check",
-      description: "আপনার idea কতটা practical তা সৎভাবে জানুন। No sugar-coating, just facts।",
-      gradient: "from-emerald-500 to-teal-600",
-      delay: 0
+      title: "Reality Check",
+      subtitle: "Honest Analysis",
+      description: "আপনার idea কতটা practical সেটা জানুন",
+      stat: "98%",
+      statLabel: "Accuracy"
     },
     {
       icon: Package,
-      title: "Product Sourcing",
-      description: "Bangladesh-এ কোথা থেকে কিভাবে product সংগ্রহ করবেন — complete guide।",
-      gradient: "from-cyan-500 to-blue-600",
-      delay: 0.1
+      title: "Sourcing Guide",
+      subtitle: "Product Finding",
+      description: "কোথা থেকে product সংগ্রহ করবেন",
+      stat: "500+",
+      statLabel: "Suppliers"
     },
     {
       icon: Truck,
-      title: "Delivery & Payment",
-      description: "Pathao, RedX, Steadfast — কোন courier ভালো? Payment gateway কোনটা?",
-      gradient: "from-violet-500 to-purple-600",
-      delay: 0.2
+      title: "Delivery Setup",
+      subtitle: "Logistics",
+      description: "Best courier & payment gateway",
+      stat: "10+",
+      statLabel: "Partners"
     },
     {
       icon: Megaphone,
-      title: "Marketing Strategy",
-      description: "প্রথম ১০ customer কিভাবে পাবেন। Zero budget থেকে শুরু করার plan।",
-      gradient: "from-rose-500 to-pink-600",
-      delay: 0.3
-    },
-    {
-      icon: Globe,
-      title: "Website Decision",
-      description: "আপনার business-এ website দরকার কি না — honest answer with reasoning।",
-      gradient: "from-amber-500 to-orange-600",
-      delay: 0.4
-    },
-    {
-      icon: Target,
-      title: "14-Day Action Plan",
-      description: "Day 1 থেকে Day 14 পর্যন্ত exactly কি করবেন — step-by-step roadmap।",
-      gradient: "from-lime-500 to-green-600",
-      delay: 0.5
+      title: "Marketing Plan",
+      subtitle: "Growth Strategy",
+      description: "Zero budget থেকে শুরু করুন",
+      stat: "14",
+      statLabel: "Day Plan"
     }
   ];
 
-  const steps = [
+  const processSteps = [
     { 
-      number: "01", 
-      title: "আপনার Idea লিখুন", 
-      description: "যে business করতে চান সেটা বিস্তারিত লিখুন — budget, location সব",
+      phase: "INPUT",
+      title: "Share Your Idea", 
+      description: "Business idea, budget, এবং location দিন",
       icon: Lightbulb,
-      color: "bg-emerald-500"
+      duration: "2 min"
     },
     { 
-      number: "02", 
-      title: "AI Analysis পান", 
-      description: "2-3 মিনিটে brutally honest, practical analysis পাবেন",
+      phase: "PROCESS",
+      title: "AI Analysis", 
+      description: "Instant market ও feasibility analysis",
       icon: Brain,
-      color: "bg-accent"
+      duration: "30 sec"
     },
     { 
-      number: "03", 
-      title: "Action Plan Follow করুন", 
-      description: "14-day roadmap অনুযায়ী কাজ শুরু করুন — success guaranteed",
-      icon: Rocket,
-      color: "bg-primary"
+      phase: "OUTPUT",
+      title: "Get Roadmap", 
+      description: "Complete execution plan download করুন",
+      icon: Target,
+      duration: "Instant"
     }
   ];
 
-  const stats = [
-    { value: "5,000+", label: "Ideas Analyzed", icon: BarChart3 },
-    { value: "98%", label: "Satisfaction Rate", icon: Heart },
-    { value: "1,000+", label: "Active Users", icon: Users },
-    { value: "50+", label: "Success Stories", icon: Award }
+  const metrics = [
+    { value: "5K+", label: "Ideas Analyzed", trend: "+23%", icon: BarChart3 },
+    { value: "98%", label: "Happy Users", trend: "+5%", icon: Heart },
+    { value: "1K+", label: "Active Users", trend: "+45%", icon: Users },
+    { value: "50+", label: "Success Stories", trend: "+12%", icon: Award }
   ];
 
   const testimonials = [
     {
       name: "রাহাত আহমেদ",
-      role: "E-commerce Entrepreneur",
-      content: "Nextminds AI আমার business idea কে completely নতুন দৃষ্টিভঙ্গি দিয়েছে। 14-day plan follow করে ১ মাসে ৫০+ orders পেয়েছি!",
+      role: "E-commerce",
+      content: "14-day plan follow করে ১ মাসে ৫০+ orders পেয়েছি!",
       rating: 5,
       avatar: "RA",
-      verified: true
+      revenue: "৳50K+"
     },
     {
       name: "সাবরিনা ইসলাম",
-      role: "Startup Founder",
-      content: "Website বানাবো কি না decide করতে পারছিলাম না। Nextminds বুঝিয়ে দিল যে আমার case-এ Facebook page ই যথেষ্ট। টাকা বাঁচলো!",
+      role: "Startup",
+      content: "Facebook page ই যথেষ্ট বুঝিয়ে দিল। টাকা বাঁচলো!",
       rating: 5,
       avatar: "SI",
-      verified: true
+      revenue: "৳30K+"
     },
     {
       name: "কামরুল হাসান",
-      role: "Small Business Owner",
-      content: "Product sourcing এর suggestions অসাধারণ ছিল! Chawkbazar থেকে supplier পেয়ে গেলাম, margin অনেক ভালো হচ্ছে।",
+      role: "Retail",
+      content: "Chawkbazar থেকে supplier পেলাম, margin ভালো!",
       rating: 5,
       avatar: "KH",
-      verified: true
-    },
-    {
-      name: "ফারিয়া রহমান",
-      role: "Home Business Owner",
-      content: "Housewife হয়ে business করা সহজ না। কিন্তু Nextminds এর step-by-step guide follow করে এখন monthly ৩০k+ income!",
-      rating: 5,
-      avatar: "FR",
-      verified: true
+      revenue: "৳80K+"
     }
   ];
 
   const faqs = [
     {
-      question: "Nextminds AI কিভাবে কাজ করে?",
-      answer: "আপনি আপনার business idea, budget, location লিখবেন। আমাদের AI সেটা analyze করে practical, honest feedback দেবে। সাথে 14-day action plan, product sourcing tips, marketing strategy — সব পাবেন।"
+      q: "Nextminds AI কিভাবে কাজ করে?",
+      a: "আপনি business idea, budget, location দেবেন। AI analyze করে practical feedback, 14-day action plan, sourcing tips সব দেবে।"
     },
     {
-      question: "এটা কি শুধু Bangladesh-এর জন্য?",
-      answer: "হ্যাঁ! আমাদের সব suggestions Bangladesh market, local suppliers, delivery systems এবং payment methods এর উপর based। Dhaka, Chittagong, Sylhet — সব city cover করি।"
+      q: "এটা কি শুধু Bangladesh-এর জন্য?",
+      a: "হ্যাঁ! সব suggestions Bangladesh market, local suppliers, delivery systems এর উপর based।"
     },
     {
-      question: "Analysis করতে কত সময় লাগে?",
-      answer: "মাত্র 2-3 মিনিট! AI instantly আপনার idea analyze করে detailed report generate করে। Report টা PDF হিসেবে download করে রাখতে পারবেন।"
+      q: "Analysis করতে কত সময় লাগে?",
+      a: "মাত্র 2-3 মিনিট! AI instantly detailed report generate করে। PDF download করতে পারবেন।"
     },
     {
-      question: "Free version-এ কি কি পাবো?",
-      answer: "Free-তে Basic Reality Check এবং Website Decision পাবেন। Full sourcing guide, marketing strategy, এবং 14-day plan এর জন্য paid plan নিতে হবে।"
-    },
-    {
-      question: "Payment কিভাবে করব?",
-      answer: "bKash, Nagad, Rocket সহ সব popular mobile banking এ payment করতে পারবেন। Card payment-ও available। সব transaction secure।"
-    },
-    {
-      question: "Refund policy কি?",
-      answer: "আমরা quality guarantee দিই। Analysis এ satisfied না হলে বা technical issue হলে আমরা re-analysis free তে দেব অথবা refund process করব।"
+      q: "Payment কিভাবে করব?",
+      a: "bKash, Nagad, Rocket সহ সব mobile banking এ payment করতে পারবেন। Card-ও available।"
     }
   ];
 
-  const whyChooseUs = [
-    { icon: BadgeCheck, text: "কোন motivational talk নয় — শুধু সৎ, practical advice" },
-    { icon: Globe, text: "Bangladesh context-এ সব সাজেশন — local suppliers, local market" },
-    { icon: Target, text: "Website দরকার কি না — honest decision with reasoning" },
-    { icon: Clock, text: "14-day action plan সাথে পাবেন — step by step execution" },
-    { icon: Package, text: "Sourcing, delivery, marketing — সব একসাথে এক report-এ" },
-    { icon: Shield, text: "No fake promises — যা possible তাই বলি" }
+  const benefits = [
+    "No motivational talk — শুধু practical advice",
+    "Bangladesh context — local market focus",
+    "14-day action plan included",
+    "Sourcing, delivery, marketing — সব একসাথে"
   ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.08 }
+      transition: { staggerChildren: 0.06 }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 25 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }
     }
   };
 
   return (
     <Layout>
-      {/* Hero Section - Emerald & Coral Theme */}
-      <section ref={heroRef} className="relative min-h-[100vh] flex items-center overflow-hidden">
-        {/* Aurora Background */}
-        <div className="absolute inset-0 aurora-bg" />
-        <div className="absolute inset-0 gradient-mesh opacity-60" />
+      {/* HERO - Minimal Split Design */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden bg-background">
+        {/* Subtle Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.3)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.3)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
         
-        {/* Animated Blobs */}
+        {/* Gradient Orbs */}
         <motion.div 
-          className="absolute top-[10%] left-[5%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] blob-animate"
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div 
-          className="absolute bottom-[10%] right-[5%] w-[600px] h-[600px] bg-accent/15 rounded-full blur-[140px] blob-animate"
-          style={{ animationDelay: '-4s' }}
-          animate={{ scale: [1.2, 1, 1.2], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div 
-          className="absolute top-[40%] right-[20%] w-[300px] h-[300px] bg-cyan-500/10 rounded-full blur-[100px]"
-          animate={{ y: [-30, 30, -30] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        
-        {/* Floating Geometric Shapes */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
-            <motion.div 
-              key={i}
-              className={`absolute w-3 h-3 rounded-full ${i % 2 === 0 ? 'bg-accent/40' : 'bg-primary/30'}`}
-              style={{
-                top: `${20 + i * 15}%`,
-                left: `${5 + i * 20}%`,
-              }}
-              animate={{ 
-                y: [-20, 20, -20], 
-                x: [-10, 10, -10],
-                opacity: [0.3, 0.7, 0.3],
-              }}
-              transition={{ duration: 4 + i, repeat: Infinity, delay: i * 0.5 }}
-            />
-          ))}
-          
-          {/* Floating Rings */}
-          <motion.div 
-            className="absolute top-[25%] right-[12%] w-20 h-20 border-2 border-accent/20 rounded-full"
-            animate={{ rotate: 360, scale: [1, 1.1, 1] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          />
-          <motion.div 
-            className="absolute bottom-[30%] left-[8%] w-16 h-16 border border-primary/20 rounded-full"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          />
-        </div>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-        
-        <motion.div 
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="section-container relative z-10 py-20"
-        >
-          <motion.div 
-            className="max-w-5xl mx-auto text-center"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-          >
-            {/* Badge */}
-            <motion.div 
-              variants={itemVariants}
-              className="inline-flex items-center gap-2.5 glass-card px-5 py-2.5 rounded-full text-sm font-medium mb-10 border border-primary/20"
-            >
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              >
-                <Leaf className="h-4 w-4 text-primary" />
-              </motion.div>
-              <span className="text-foreground/90">Bangladesh's #1 Business Intelligence Platform</span>
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            </motion.div>
-            
-            {/* Main Heading */}
-            <motion.h1 
-              variants={itemVariants}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight leading-[1.1]"
-              style={{ 
-                WebkitFontSmoothing: 'antialiased',
-                MozOsxFontSmoothing: 'grayscale',
-                textRendering: 'optimizeLegibility'
-              }}
-            >
-              <span className="text-primary">Nextminds</span>
-              <motion.span 
-                className="ml-2 md:ml-4 bg-gradient-to-r from-accent via-orange-400 to-rose-500 bg-clip-text text-transparent"
-                style={{ 
-                  WebkitBackgroundClip: 'text',
-                  backgroundSize: '200% 100%'
-                }}
-                animate={{ 
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
-                AI
-              </motion.span>
-            </motion.h1>
-            
-            <motion.p 
-              variants={itemVariants}
-              className="text-2xl md:text-3xl font-medium text-foreground/70 mb-8"
-            >
-              Turn Ideas into Action
-            </motion.p>
-            
-            {/* Flow Diagram */}
-            <motion.div 
-              variants={itemVariants}
-              className="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-sm md:text-base text-muted-foreground mb-8"
-            >
-              {["Idea", "Analysis", "Strategy", "Execution", "Success"].map((step, i) => (
-                <span key={i} className="flex items-center gap-2 md:gap-3">
-                  <motion.span 
-                    className={`px-3 py-1.5 rounded-lg ${i === 4 ? "bg-accent/15 text-accent font-semibold" : "bg-secondary/80"}`}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {step}
-                  </motion.span>
-                  {i < 4 && (
-                    <motion.div
-                      animate={{ x: [0, 4, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-                    >
-                      <ArrowRight className="h-4 w-4 text-primary/50" />
-                    </motion.div>
-                  )}
-                </span>
-              ))}
-            </motion.div>
-            
-            {/* Description */}
-            <motion.p 
-              variants={itemVariants}
-              className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed"
-            >
-              Raw business idea কে <span className="text-primary font-semibold">complete execution plan</span> এ convert করুন। 
-              কোন motivational talk নয়, শুধু <span className="text-accent font-semibold">practical, honest, actionable guidance</span>।
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div 
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
-            >
-              <motion.div
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button 
-                  size="xl" 
-                  className="gradient-coral text-white font-bold coral-glow px-10 py-7 text-lg rounded-2xl shadow-2xl border-0"
-                  asChild
-                >
-                  <Link to="/analyze" className="flex items-center gap-3">
-                    <Zap className="h-6 w-6" />
-                    Free তে Analyze করুন
-                    <ArrowRight className="h-5 w-5" />
-                  </Link>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="glass-card border-primary/25 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-base rounded-xl"
-                  asChild
-                >
-                  <Link to="/pricing" className="flex items-center gap-2">
-                    <Gem className="h-5 w-5" />
-                    Pricing দেখুন
-                  </Link>
-                </Button>
-              </motion.div>
-            </motion.div>
-
-            {/* Social Proof */}
-            <motion.div 
-              variants={itemVariants}
-              className="flex flex-col items-center gap-4"
-            >
-              <div className="flex -space-x-3">
-                {["RA", "SI", "KH", "FR", "AB"].map((initial, i) => (
-                  <motion.div 
-                    key={i} 
-                    className="w-11 h-11 rounded-full gradient-hero flex items-center justify-center text-white text-sm font-semibold border-3 border-background shadow-md"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.8 + i * 0.1 }}
-                  >
-                    {initial}
-                  </motion.div>
-                ))}
-                <motion.div 
-                  className="w-11 h-11 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-bold border-3 border-background"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 1.3 }}
-                >
-                  +1k
-                </motion.div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-accent fill-accent" />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-foreground">1,000+</span> entrepreneurs trust us
-                </span>
-              </div>
-            </motion.div>
-
-            <motion.p 
-              variants={itemVariants}
-              className="mt-12 text-sm text-muted-foreground"
-            >
-              Powered by <span className="font-semibold text-primary">SA Coder</span>
-            </motion.p>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div 
-            className="absolute bottom-8 left-1/2 -translate-x-1/2"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-xs text-muted-foreground">Scroll to explore</span>
-              <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-1">
-                <motion.div 
-                  className="w-1.5 h-3 rounded-full bg-accent"
-                  animate={{ y: [0, 12, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 gradient-hero" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
-        
-        <div className="section-container relative z-10">
-          <motion.div 
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={containerVariants}
-          >
-            {stats.map((stat, index) => (
-              <motion.div 
-                key={index}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="text-center group"
-              >
-                <motion.div 
-                  className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm mb-5 shadow-lg group-hover:bg-white/15 transition-colors"
-                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <stat.icon className="h-8 w-8 text-white" />
-                </motion.div>
-                <motion.div 
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, type: "spring" }}
-                >
-                  {stat.value}
-                </motion.div>
-                <div className="text-white/70 text-sm md:text-base font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-28 md:py-36 bg-background relative">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <div className="section-container">
-          <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <motion.span 
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Layers className="h-4 w-4" />
-              Features
-            </motion.span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              আপনি কি কি <span className="text-gradient-coral">পাবেন?</span>
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl">
-              প্রতিটি business idea-র জন্য complete execution guide — সব এক জায়গায়
-            </p>
-          </motion.div>
-
-          <motion.div 
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={containerVariants}
-          >
-            {features.map((feature, index) => (
-              <motion.div 
-                key={index} 
-                variants={itemVariants}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="glass-card p-8 lg:p-10 rounded-3xl hover:shadow-card-hover transition-all duration-300 group cursor-pointer relative overflow-hidden"
-              >
-                {/* Glow effect */}
-                <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${feature.gradient} opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-500`} />
-                
-                <motion.div 
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 shadow-lg relative overflow-hidden`}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <feature.icon className="h-8 w-8 text-white relative z-10" />
-                  <motion.div 
-                    className="absolute inset-0 bg-white/20"
-                    animate={{ x: ['-100%', '200%'] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
-                  />
-                </motion.div>
-                <h3 className="font-bold text-xl md:text-2xl mb-4 group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Video Demo Section */}
-      <section className="py-28 gradient-subtle relative overflow-hidden">
-        <motion.div 
-          className="absolute top-20 right-10 w-80 h-80 bg-accent/8 rounded-full blur-[100px]"
-          animate={{ scale: [1, 1.2, 1] }}
+          className="absolute top-[20%] right-[10%] w-[600px] h-[600px] bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-[100px]"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity }}
         />
         <motion.div 
-          className="absolute bottom-20 left-10 w-72 h-72 bg-primary/8 rounded-full blur-[100px]"
-          animate={{ scale: [1.2, 1, 1.2] }}
+          className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-gradient-to-tr from-accent/20 to-transparent rounded-full blur-[80px]"
+          animate={{ scale: [1.1, 1, 1.1] }}
           transition={{ duration: 10, repeat: Infinity }}
         />
-        
-        <div className="section-container relative z-10">
-          <motion.div 
-            className="text-center mb-14"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-6">
-              <Play className="h-4 w-4" />
-              Demo
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-              দেখুন কিভাবে <span className="text-gradient">কাজ করে</span>
-            </h2>
-            <p className="text-muted-foreground text-lg">২ মিনিটে সব বুঝে যাবেন</p>
-          </motion.div>
 
-          <motion.div 
-            className="max-w-5xl mx-auto"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="glass-card-strong rounded-3xl p-3 md:p-4 shadow-2xl">
-              <div className="relative aspect-video rounded-2xl bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden flex items-center justify-center group cursor-pointer">
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
-                
-                <motion.div 
-                  className="w-24 h-24 rounded-full gradient-coral flex items-center justify-center coral-glow shadow-2xl relative overflow-hidden"
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.95 }}
-                  animate={{ 
-                    boxShadow: [
-                      "0 0 30px hsl(12 85% 60% / 0.3)",
-                      "0 0 50px hsl(12 85% 60% / 0.5)",
-                      "0 0 30px hsl(12 85% 60% / 0.3)"
-                    ]
-                  }}
-                  transition={{ duration: 2.5, repeat: Infinity }}
-                >
-                  <Play className="h-10 w-10 text-white ml-1.5" fill="currentColor" />
+        <motion.div 
+          style={{ scale: heroScale, opacity: heroOpacity }}
+          className="section-container relative z-10 py-20"
+        >
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Left - Content */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
+              {/* Tag */}
+              <motion.div variants={itemVariants} className="mb-8">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                  Bangladesh's #1 AI Business Analyzer
+                </span>
+              </motion.div>
+
+              {/* Heading */}
+              <motion.h1 
+                variants={itemVariants}
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-[1.1] tracking-tight"
+              >
+                <span className="text-foreground">Turn your</span>
+                <br />
+                <span className="text-gradient-coral">Business Idea</span>
+                <br />
+                <span className="text-foreground">into Reality</span>
+              </motion.h1>
+
+              {/* Description */}
+              <motion.p 
+                variants={itemVariants}
+                className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed"
+              >
+                Get honest, practical analysis for your business idea. 
+                No false promises — just <span className="text-foreground font-medium">actionable guidance</span> tailored for Bangladesh market.
+              </motion.p>
+
+              {/* CTA */}
+              <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mb-10">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button 
+                    size="lg" 
+                    className="gradient-coral text-white font-semibold coral-glow px-8 py-6 text-base rounded-xl border-0"
+                    asChild
+                  >
+                    <Link to="/analyze" className="flex items-center gap-2">
+                      Start Free Analysis
+                      <ArrowUpRight className="h-5 w-5" />
+                    </Link>
+                  </Button>
                 </motion.div>
-                
-                <div className="absolute bottom-5 left-5 glass-card px-5 py-3 rounded-xl">
-                  <p className="text-sm font-semibold">2:30 - Quick Demo Video</p>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="px-8 py-6 text-base rounded-xl border-2"
+                  asChild
+                >
+                  <Link to="/pricing">View Pricing</Link>
+                </Button>
+              </motion.div>
+
+              {/* Trust Indicators */}
+              <motion.div variants={itemVariants} className="flex items-center gap-6">
+                <div className="flex -space-x-2">
+                  {["RA", "SI", "KH"].map((a, i) => (
+                    <div key={i} className="w-10 h-10 rounded-full gradient-hero flex items-center justify-center text-white text-xs font-bold border-2 border-background">
+                      {a}
+                    </div>
+                  ))}
                 </div>
-                
-                <div className="absolute top-5 right-5 glass-card px-4 py-2 rounded-lg">
-                  <p className="text-xs text-muted-foreground">Coming Soon</p>
+                <div className="text-sm">
+                  <div className="flex items-center gap-1 mb-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 text-accent fill-accent" />
+                    ))}
+                  </div>
+                  <span className="text-muted-foreground">1,000+ trusted users</span>
                 </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right - Feature Cards Stack */}
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <div className="relative h-[500px] lg:h-[550px]">
+                {/* Stacked Cards */}
+                {[
+                  { title: "14-Day Action Plan", desc: "Step-by-step roadmap", icon: Target, rotate: -3, y: 0 },
+                  { title: "Market Analysis", desc: "Bangladesh focused insights", icon: BarChart3, rotate: 2, y: 120 },
+                  { title: "Sourcing Guide", desc: "Local supplier contacts", icon: Package, rotate: -1, y: 240 },
+                ].map((card, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute left-0 right-0 mx-auto w-[90%] lg:w-[85%]"
+                    style={{ top: card.y }}
+                    initial={{ opacity: 0, y: 50, rotate: 0 }}
+                    animate={{ opacity: 1, y: 0, rotate: card.rotate }}
+                    transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
+                    whileHover={{ y: -5, rotate: 0, zIndex: 10 }}
+                  >
+                    <div className="glass-card p-6 rounded-2xl border border-border/50 shadow-lg hover:shadow-xl transition-all">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-xl gradient-coral flex items-center justify-center">
+                          <card.icon className="h-7 w-7 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-lg">{card.title}</h3>
+                          <p className="text-sm text-muted-foreground">{card.desc}</p>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+
+                {/* Floating Badge */}
+                <motion.div 
+                  className="absolute -right-4 top-[60%] bg-card border border-border rounded-xl p-3 shadow-lg"
+                  animate={{ y: [-5, 5, -5] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
+                      <Zap className="h-4 w-4 text-accent" />
+                    </div>
+                    <div className="text-sm">
+                      <div className="font-semibold">2-3 min</div>
+                      <div className="text-xs text-muted-foreground">Analysis Time</div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <MousePointer2 className="h-6 w-6 text-muted-foreground" />
+        </motion.div>
+      </section>
+
+      {/* METRICS - Horizontal Card Strip */}
+      <section className="py-6 bg-primary">
+        <div className="section-container">
+          <div className="flex flex-wrap justify-center md:justify-between items-center gap-6 md:gap-4">
+            {metrics.map((metric, i) => (
+              <motion.div 
+                key={i}
+                className="flex items-center gap-3 px-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <metric.icon className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-white">{metric.value}</span>
+                    <span className="text-xs text-white/60 font-medium">{metric.trend}</span>
+                  </div>
+                  <span className="text-sm text-white/70">{metric.label}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-28 md:py-36 bg-background">
+      {/* FEATURES - Bento Grid */}
+      <section className="py-24 md:py-32 bg-background">
         <div className="section-container">
           <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-6">
-              <CircleDot className="h-4 w-4" />
-              Process
+            <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-sm font-medium mb-4">
+              What You Get
             </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-              কিভাবে <span className="text-gradient-coral">কাজ করে?</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              Complete Business <span className="text-gradient-coral">Toolkit</span>
             </h2>
-            <p className="text-muted-foreground text-lg md:text-xl">মাত্র ৩টি সহজ step-এ আপনার business plan ready</p>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Everything you need to validate and launch your business idea
+            </p>
           </motion.div>
 
+          {/* Bento Layout */}
           <motion.div 
-            className="grid md:grid-cols-3 gap-8 lg:gap-16 max-w-5xl mx-auto"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={containerVariants}
           >
-            {steps.map((step, index) => (
-              <motion.div 
-                key={index} 
+            {features.map((feature, i) => (
+              <motion.div
+                key={i}
                 variants={itemVariants}
-                className="text-center relative"
+                whileHover={{ y: -4 }}
+                className={`group relative p-6 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all ${i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}`}
               >
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-14 left-[60%] w-[80%] h-[3px]">
-                    <div className="h-full bg-gradient-to-r from-primary/40 to-transparent rounded-full" />
-                    <motion.div 
-                      className="absolute top-0 left-0 h-full bg-accent rounded-full"
-                      initial={{ width: 0 }}
-                      whileInView={{ width: '50%' }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5 + index * 0.3, duration: 0.8 }}
-                    />
-                  </div>
-                )}
+                {/* Icon */}
+                <div className={`w-12 h-12 rounded-xl gradient-coral flex items-center justify-center mb-4 ${i === 0 ? 'w-16 h-16' : ''}`}>
+                  <feature.icon className={`text-white ${i === 0 ? 'h-8 w-8' : 'h-6 w-6'}`} />
+                </div>
+
+                {/* Content */}
+                <div className="mb-4">
+                  <span className="text-xs text-muted-foreground uppercase tracking-wide">{feature.subtitle}</span>
+                  <h3 className={`font-bold mt-1 ${i === 0 ? 'text-2xl' : 'text-lg'}`}>{feature.title}</h3>
+                </div>
                 
-                <motion.div 
-                  className="relative mb-8"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className={`w-28 h-28 ${step.color} rounded-3xl flex items-center justify-center text-3xl font-bold text-white mx-auto shadow-xl relative overflow-hidden`}>
-                    {step.number}
-                    <motion.div 
-                      className="absolute inset-0 bg-white/10"
-                      animate={{ x: ['-100%', '200%'] }}
-                      transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
-                    />
-                  </div>
-                  <motion.div 
-                    className="absolute -bottom-2 -right-2 md:right-[calc(50%-3.5rem)] w-12 h-12 rounded-xl bg-card border-2 border-border flex items-center justify-center shadow-lg"
-                    whileHover={{ rotate: 10 }}
-                  >
-                    <step.icon className="h-6 w-6 text-primary" />
-                  </motion.div>
-                </motion.div>
-                
-                <h3 className="font-bold text-xl md:text-2xl mb-4">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+                <p className={`text-muted-foreground mb-4 ${i === 0 ? 'text-base' : 'text-sm'}`}>
+                  {feature.description}
+                </p>
+
+                {/* Stat */}
+                <div className="flex items-baseline gap-1">
+                  <span className={`font-bold text-accent ${i === 0 ? 'text-3xl' : 'text-xl'}`}>{feature.stat}</span>
+                  <span className="text-xs text-muted-foreground">{feature.statLabel}</span>
+                </div>
+
+                {/* Hover Arrow */}
+                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ArrowUpRight className="h-5 w-5 text-primary" />
+                </div>
               </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
 
-          {/* CTA after steps */}
+      {/* PROCESS - Timeline Style */}
+      <section className="py-24 md:py-32 bg-secondary/30">
+        <div className="section-container">
           <motion.div 
-            className="text-center mt-20"
-            initial={{ opacity: 0, y: 30 }}
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button 
-                size="lg" 
-                className="gradient-hero text-white px-10 py-7 text-lg rounded-2xl shadow-xl"
-                asChild
-              >
-                <Link to="/analyze" className="flex items-center gap-3">
-                  এখনই শুরু করুন
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              <Workflow className="h-4 w-4" />
+              How It Works
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              Three Simple <span className="text-gradient-coral">Steps</span>
+            </h2>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              {/* Connection Line */}
+              <div className="absolute left-[28px] md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-border" />
+
+              {processSteps.map((step, i) => (
+                <motion.div
+                  key={i}
+                  className={`relative flex items-center gap-6 mb-12 last:mb-0 ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}
+                  initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2 }}
+                >
+                  {/* Timeline Node */}
+                  <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-14 h-14 rounded-full gradient-hero flex items-center justify-center text-white font-bold text-lg border-4 border-background z-10">
+                    {i + 1}
+                  </div>
+
+                  {/* Card */}
+                  <div className={`ml-20 md:ml-0 md:w-[calc(50%-40px)] ${i % 2 === 1 ? 'md:mr-auto' : 'md:ml-auto'}`}>
+                    <div className="glass-card p-6 rounded-2xl">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-semibold text-accent uppercase tracking-wider">{step.phase}</span>
+                        <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded">{step.duration}</span>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
+                          <step.icon className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg mb-1">{step.title}</h3>
+                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <motion.div 
+              className="text-center mt-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Button size="lg" className="gradient-coral text-white coral-glow border-0 px-8" asChild>
+                <Link to="/analyze" className="flex items-center gap-2">
+                  Start Your Analysis
                   <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-28 md:py-36 gradient-subtle relative overflow-hidden">
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute top-20 right-10 w-80 h-80 bg-accent/5 rounded-full blur-[120px]" />
-        
-        <div className="section-container relative z-10">
+      {/* TESTIMONIALS - Horizontal Scroll Cards */}
+      <section className="py-24 md:py-32 bg-background overflow-hidden">
+        <div className="section-container">
           <motion.div 
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-6">
-              <Quote className="h-4 w-4" />
-              Testimonials
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-              আমাদের <span className="text-gradient-coral">Customers</span> বলছেন
-            </h2>
-            <p className="text-muted-foreground text-lg">Real success stories from real entrepreneurs</p>
-          </motion.div>
-
-          <motion.div 
-            className="grid md:grid-cols-2 gap-6 lg:gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-          >
-            {testimonials.map((testimonial, index) => (
-              <motion.div 
-                key={index}
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
-                className="glass-card-strong p-8 lg:p-10 rounded-3xl relative group"
-              >
-                <Quote className="absolute top-6 right-6 h-12 w-12 text-accent/10 group-hover:text-accent/20 transition-colors" />
-                
-                <div className="flex gap-1 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-accent fill-accent" />
-                  ))}
-                </div>
-                
-                <p className="text-foreground text-lg mb-8 leading-relaxed">"{testimonial.content}"</p>
-                
-                <div className="flex items-center gap-4">
-                  <motion.div 
-                    className="w-14 h-14 rounded-2xl gradient-hero flex items-center justify-center text-white font-bold text-lg shadow-lg"
-                    whileHover={{ rotate: 5 }}
-                  >
-                    {testimonial.avatar}
-                  </motion.div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-lg">{testimonial.name}</span>
-                      {testimonial.verified && (
-                        <BadgeCheck className="h-5 w-5 text-accent" />
-                      )}
-                    </div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-sm font-medium mb-4">
+                <MessageCircle className="h-4 w-4" />
+                Success Stories
+              </span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                Real Results from<br />
+                <span className="text-gradient-coral">Real Entrepreneurs</span>
+              </h2>
+            </div>
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-6 w-6 text-accent fill-accent" />
+              ))}
+              <span className="ml-2 text-muted-foreground">4.9/5 rating</span>
+            </div>
           </motion.div>
         </div>
-      </section>
 
-      {/* Why Choose Us */}
-      <section className="py-28 md:py-36 bg-background">
-        <div className="section-container">
-          <div className="max-w-5xl mx-auto">
-            <motion.div 
-              className="text-center mb-16"
+        {/* Cards */}
+        <div className="flex gap-6 px-4 md:px-8 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={i}
+              className="flex-shrink-0 w-[320px] md:w-[380px] snap-center"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ delay: i * 0.1 }}
             >
-              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-6">
-                <Gem className="h-4 w-4" />
-                Why Us
+              <div className="h-full p-6 rounded-2xl border border-border bg-card hover:border-primary/20 transition-colors">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full gradient-hero flex items-center justify-center text-white font-bold">
+                      {t.avatar}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-semibold">{t.name}</span>
+                        <BadgeCheck className="h-4 w-4 text-accent" />
+                      </div>
+                      <span className="text-sm text-muted-foreground">{t.role}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-accent">{t.revenue}</div>
+                    <div className="text-xs text-muted-foreground">Revenue</div>
+                  </div>
+                </div>
+
+                {/* Quote */}
+                <p className="text-foreground mb-4 leading-relaxed">"{t.content}"</p>
+
+                {/* Rating */}
+                <div className="flex gap-0.5">
+                  {[...Array(t.rating)].map((_, j) => (
+                    <Star key={j} className="h-4 w-4 text-accent fill-accent" />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* BENEFITS - Split Design */}
+      <section className="py-24 md:py-32 bg-primary text-white relative overflow-hidden">
+        {/* Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_50%)]" />
+        
+        <div className="section-container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Left */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-sm font-medium mb-6">
+                Why Nextminds AI
               </span>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-                কেন <span className="text-gradient-coral">Nextminds AI?</span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                Built for Bangladesh Entrepreneurs
               </h2>
-              <p className="text-muted-foreground text-lg">কারণ আমরা different</p>
+              <p className="text-white/70 text-lg mb-8 max-w-lg">
+                We understand the local market, suppliers, and challenges. Our AI is trained specifically for Bangladesh business context.
+              </p>
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90" asChild>
+                <Link to="/analyze">
+                  Try It Free
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Link>
+              </Button>
             </motion.div>
 
-            <motion.div 
-              className="grid md:grid-cols-2 gap-4 lg:gap-5"
+            {/* Right - Checklist */}
+            <motion.div
+              className="space-y-4"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={containerVariants}
             >
-              {whyChooseUs.map((point, index) => (
-                <motion.div 
-                  key={index} 
+              {benefits.map((benefit, i) => (
+                <motion.div
+                  key={i}
                   variants={itemVariants}
-                  whileHover={{ x: 8, scale: 1.01 }}
-                  className="flex items-center gap-5 p-5 lg:p-6 glass-card rounded-2xl cursor-pointer group"
+                  className="flex items-center gap-4 p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
                 >
-                  <motion.div 
-                    className="w-14 h-14 rounded-xl gradient-coral flex items-center justify-center flex-shrink-0 shadow-lg"
-                    whileHover={{ rotate: 10 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <point.icon className="h-6 w-6 text-white" />
-                  </motion.div>
-                  <span className="text-lg font-medium">{point.text}</span>
+                  <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
+                    <CircleCheck className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-lg font-medium">{benefit}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -861,122 +666,104 @@ const Index = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-28 md:py-36 gradient-subtle">
+      {/* FAQ - Minimal Accordion */}
+      <section className="py-24 md:py-32 bg-background">
         <div className="section-container">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-6">
-              <Sparkles className="h-4 w-4" />
-              FAQ
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-              সাধারণ <span className="text-gradient-coral">প্রশ্নসমূহ</span>
-            </h2>
-            <p className="text-muted-foreground text-lg">আপনার প্রশ্নের উত্তর এখানে</p>
-          </motion.div>
+          <div className="max-w-3xl mx-auto">
+            <motion.div 
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-sm font-medium mb-4">
+                <HelpCircle className="h-4 w-4" />
+                FAQ
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Common Questions
+              </h2>
+            </motion.div>
 
-          <motion.div 
-            className="max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => (
-                <AccordionItem 
-                  key={index} 
-                  value={`item-${index}`}
-                  className="glass-card-strong rounded-2xl px-6 lg:px-8 border-none overflow-hidden"
+            <Accordion type="single" collapsible className="space-y-3">
+              {faqs.map((faq, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                 >
-                  <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline py-6 [&[data-state=open]>svg]:text-accent">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-6 leading-relaxed text-base">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
+                  <AccordionItem 
+                    value={`item-${i}`}
+                    className="border border-border rounded-xl px-6 data-[state=open]:border-primary/30 transition-colors"
+                  >
+                    <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
+                      {faq.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-5">
+                      {faq.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                </motion.div>
               ))}
             </Accordion>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-32 md:py-40 relative overflow-hidden">
-        <div className="absolute inset-0 gradient-hero" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
-        
-        {/* Floating elements */}
+      {/* CTA - Final */}
+      <section className="py-24 md:py-32 bg-gradient-to-br from-primary via-primary to-emerald-700 text-white relative overflow-hidden">
+        {/* Decorative */}
         <motion.div 
-          className="absolute top-20 left-[10%] w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm"
-          animate={{ y: [-20, 20, -20], rotate: [0, 180, 360] }}
-          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute top-10 right-[10%] w-32 h-32 rounded-full bg-white/10"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 4, repeat: Infinity }}
         />
         <motion.div 
-          className="absolute bottom-20 right-[15%] w-16 h-16 rounded-2xl bg-accent/30"
-          animate={{ y: [20, -20, 20], scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute bottom-10 left-[5%] w-20 h-20 rounded-2xl bg-accent/30 rotate-12"
+          animate={{ rotate: [12, -12, 12] }}
+          transition={{ duration: 6, repeat: Infinity }}
         />
-        <motion.div 
-          className="absolute top-[40%] right-[8%] w-8 h-8 rounded-full bg-white/15"
-          animate={{ y: [-15, 15, -15] }}
-          transition={{ duration: 5, repeat: Infinity }}
-        />
-        
+
         <div className="section-container relative z-10">
           <motion.div 
-            className="max-w-4xl mx-auto text-center"
+            className="max-w-3xl mx-auto text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
           >
             <motion.div
-              animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
+              className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 mb-8"
+              animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 4, repeat: Infinity }}
-              className="inline-block mb-10"
             >
-              <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-sm flex items-center justify-center mx-auto shadow-2xl">
-                <Rocket className="h-12 w-12 text-accent" />
-              </div>
+              <Rocket className="h-10 w-10" />
             </motion.div>
-            
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              আজই শুরু করুন
+
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+              Ready to Start Your Journey?
             </h2>
-            <p className="text-xl md:text-2xl text-white/80 mb-12 leading-relaxed max-w-2xl mx-auto">
-              আপনার business idea-কে reality তে convert করার প্রথম step নিন।
-              <br />
-              <span className="text-accent font-semibold">1,000+</span> entrepreneurs already trust us.
+            <p className="text-xl text-white/80 mb-10 max-w-xl mx-auto">
+              Join 1,000+ entrepreneurs who transformed their ideas into successful businesses.
             </p>
-            
-            <motion.div
-              whileHover={{ scale: 1.03, y: -3 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-block"
-            >
-              <Button 
-                size="xl" 
-                className="bg-white text-primary font-bold hover:bg-white/95 px-12 py-8 text-xl rounded-2xl shadow-2xl"
-                asChild
-              >
-                <Link to="/analyze" className="flex items-center gap-4">
-                  <Sparkles className="h-6 w-6" />
-                  Free তে Business Analyze করুন
-                  <ArrowRight className="h-6 w-6" />
-                </Link>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg" asChild>
+                  <Link to="/analyze" className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5" />
+                    Start Free Analysis
+                  </Link>
+                </Button>
+              </motion.div>
+              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-6" asChild>
+                <Link to="/pricing">View Plans</Link>
               </Button>
-            </motion.div>
-            
-            <p className="mt-10 text-white/60 text-sm">
-              Powered by <span className="font-semibold text-white/80">SA Coder</span>
+            </div>
+
+            <p className="mt-8 text-sm text-white/50">
+              Powered by <span className="font-medium text-white/70">SA Coder</span>
             </p>
           </motion.div>
         </div>
