@@ -37,10 +37,10 @@ const PLAN_PRICES = {
   unlimited: 999
 };
 
-// DodoPayment product IDs - configure these in your Dodo dashboard
+// DodoPayment product IDs
 const DODO_PRODUCTS = {
-  single: "prod_single_analysis",
-  unlimited: "prod_unlimited_monthly"
+  single: "pdt_0NWwereSZmDdIGXgDexm9",
+  unlimited: "pdt_0NWwhTXY2YTv6XjIPEnc4"
 };
 
 const PaymentPage = () => {
