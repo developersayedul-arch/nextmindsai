@@ -29,6 +29,7 @@ import AdminMentorshipPage from "./pages/admin/AdminMentorshipPage";
 import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminTrackingPage from "./pages/admin/AdminTrackingPage";
 import AdminPaymentMethodsPage from "./pages/admin/AdminPaymentMethodsPage";
+import AdminDodoProductsPage from "./pages/admin/AdminDodoProductsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/admin/payments" element={<AdminPaymentsPage />} />
             <Route path="/admin/tracking" element={<AdminTrackingPage />} />
             <Route path="/admin/payment-methods" element={<AdminPaymentMethodsPage />} />
+            <Route path="/admin/dodo-products" element={<AdminDodoProductsPage />} />
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

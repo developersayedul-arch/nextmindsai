@@ -14,7 +14,8 @@ import {
   GraduationCap,
   CreditCard,
   Radar,
-  Wallet
+  Wallet,
+  Package
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,6 +57,11 @@ const menuItems = [
     title: "পেমেন্ট মেথড", 
     url: "/admin/payment-methods", 
     icon: Wallet
+  },
+  { 
+    title: "DodoPay Products", 
+    url: "/admin/dodo-products", 
+    icon: Package
   },
   { 
     title: "ট্র্যাকিং", 

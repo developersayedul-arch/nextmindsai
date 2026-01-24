@@ -190,6 +190,51 @@ export type Database = {
           },
         ]
       }
+      dodo_products: {
+        Row: {
+          created_at: string
+          display_name: string
+          display_name_bn: string | null
+          display_order: number
+          dodo_product_id: string
+          duration_info: string | null
+          id: string
+          is_active: boolean
+          price_bdt: number
+          product_key: string
+          product_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          display_name_bn?: string | null
+          display_order?: number
+          dodo_product_id: string
+          duration_info?: string | null
+          id?: string
+          is_active?: boolean
+          price_bdt?: number
+          product_key: string
+          product_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          display_name_bn?: string | null
+          display_order?: number
+          dodo_product_id?: string
+          duration_info?: string | null
+          id?: string
+          is_active?: boolean
+          price_bdt?: number
+          product_key?: string
+          product_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       follow_up_reminders: {
         Row: {
           completed_at: string | null
