@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { Sparkles, User, LogOut, History, Shield, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,15 +21,49 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border/30 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="section-container flex h-18 items-center justify-between py-4">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="gradient-gold p-2.5 rounded-xl group-hover:scale-105 transition-transform shadow-gold">
+          <motion.div 
+            className="gradient-gold p-2.5 rounded-xl shadow-lg"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
             <Sparkles className="h-5 w-5 text-primary" />
-          </div>
+          </motion.div>
           <div className="flex flex-col">
-            <span className="font-bold text-xl leading-tight tracking-tight">
-              <span className="text-primary">Nextminds</span>
-              <span className="text-gradient-gold"> AI</span>
-            </span>
-            <span className="text-[10px] text-muted-foreground leading-tight">Powered by SA Coder</span>
+            <motion.div 
+              className="flex items-baseline gap-1"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span 
+                className="font-extrabold text-xl leading-tight tracking-tight text-primary"
+                style={{ 
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility'
+                }}
+              >
+                Nextminds
+              </span>
+              <motion.span 
+                className="font-extrabold text-xl leading-tight tracking-tight bg-gradient-to-r from-accent via-amber-400 to-accent bg-clip-text text-transparent"
+                style={{ 
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility',
+                  WebkitBackgroundClip: 'text',
+                  backgroundSize: '200% 100%'
+                }}
+                animate={{ 
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              >
+                AI
+              </motion.span>
+            </motion.div>
+            <span className="text-[10px] text-muted-foreground leading-tight font-medium">Powered by SA Coder</span>
           </div>
         </Link>
 
