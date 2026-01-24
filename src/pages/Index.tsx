@@ -257,13 +257,51 @@ const Index = () => {
             <motion.h1 
               variants={itemVariants}
               className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 tracking-tight leading-tight"
+              style={{ 
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale',
+                textRendering: 'optimizeLegibility'
+              }}
             >
-              <span className="text-primary">Nextminds</span>
-              <span className="text-gradient-gold"> AI</span>
+              <motion.span 
+                className="text-primary inline-block"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Nextminds
+              </motion.span>
+              <motion.span 
+                className="inline-block ml-2 md:ml-4 bg-gradient-to-r from-accent via-amber-400 to-orange-400 bg-clip-text text-transparent"
+                style={{ 
+                  WebkitBackgroundClip: 'text',
+                  backgroundSize: '200% 100%'
+                }}
+                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1,
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                }}
+                transition={{ 
+                  opacity: { duration: 0.6, delay: 0.4 },
+                  y: { duration: 0.6, delay: 0.4 },
+                  scale: { duration: 0.6, delay: 0.4 },
+                  backgroundPosition: { duration: 4, repeat: Infinity, ease: "linear" }
+                }}
+              >
+                AI
+              </motion.span>
               <br />
-              <span className="text-3xl md:text-4xl lg:text-5xl font-medium text-muted-foreground mt-4 block">
+              <motion.span 
+                className="text-3xl md:text-4xl lg:text-5xl font-medium text-muted-foreground mt-4 block"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
                 Turn Ideas into Action
-              </span>
+              </motion.span>
             </motion.h1>
             
             {/* Flow */}
