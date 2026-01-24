@@ -161,7 +161,17 @@ const MentorshipPage = () => {
             SA Coder Expert Team
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            ১:১ মেন্টরশিপ সেশন
+            ১:১{" "}
+            <span 
+              style={{
+                background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              মেন্টরশিপ সেশন
+            </span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             আপনার বিজনেস আইডিয়া থেকে শুরু করে স্কেলিং পর্যন্ত — 
