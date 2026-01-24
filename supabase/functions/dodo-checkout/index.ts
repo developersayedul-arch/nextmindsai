@@ -63,7 +63,7 @@ serve(async (req) => {
     } = body;
 
     // Create DodoPayment checkout session
-    const dodoResponse = await fetch('https://dodopayments.com/checkouts', {
+    const dodoResponse = await fetch('https://live.dodopayments.com/checkouts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
