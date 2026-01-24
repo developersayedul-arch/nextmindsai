@@ -32,15 +32,9 @@ interface PaymentMethod {
   display_order: number;
 }
 
-const PLAN_PRICES = {
+const PLAN_PRICES: Record<string, number> = {
   single: 299,
   unlimited: 999
-};
-
-// DodoPayment product IDs
-const DODO_PRODUCTS = {
-  single: "pdt_0NWwereSZmDdIGXgDexm9",
-  unlimited: "pdt_0NWwhTXY2YTv6XjIPEnc4"
 };
 
 const PaymentPage = () => {
@@ -71,7 +65,28 @@ const PaymentPage = () => {
       console.log("Payment methods loaded:", data);
       return data as PaymentMethod[];
     },
-    staleTime: 0, // Always refetch to get latest payment methods
+    staleTime: 0,
+  });
+
+  // Fetch DodoPayment product IDs from database
+  const { data: dodoProducts } = useQuery({
+    queryKey: ["dodo-products-analysis"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("dodo_products")
+        .select("product_key, dodo_product_id, price_bdt")
+        .eq("product_type", "analysis")
+        .eq("is_active", true);
+      if (error) throw error;
+      // Convert to a map for easy lookup
+      const productMap: Record<string, string> = {};
+      const priceMap: Record<string, number> = {};
+      data?.forEach((p: { product_key: string; dodo_product_id: string; price_bdt: number }) => {
+        productMap[p.product_key] = p.dodo_product_id;
+        priceMap[p.product_key] = p.price_bdt;
+      });
+      return { productMap, priceMap };
+    },
   });
 
   // Set first method as default when loaded
@@ -106,16 +121,22 @@ const PaymentPage = () => {
       return;
     }
 
+    const productId = dodoProducts?.productMap?.[plan];
+    if (!productId) {
+      toast.error("Product not configured. Please contact support.");
+      return;
+    }
+
     setDodoLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('dodo-checkout', {
         body: {
-          productId: DODO_PRODUCTS[plan],
+          productId: productId,
           quantity: 1,
           customerEmail: user.email,
           customerName: user.user_metadata?.full_name || user.email,
-          amount: PLAN_PRICES[plan],
+          amount: dodoProducts?.priceMap?.[plan] || PLAN_PRICES[plan],
           planType: plan,
           analysisId: analysisId,
           returnUrl: `${window.location.origin}/payment?status=success&plan=${plan}`

@@ -50,13 +50,6 @@ const SESSION_LABELS: Record<string, string> = {
   "tech-guidance": "টেক ও ওয়েবসাইট গাইডেন্স"
 };
 
-// DodoPayment product IDs for mentorship
-const DODO_MENTORSHIP_PRODUCTS: Record<string, string> = {
-  "business-idea": "pdt_0NWwi9AZrEYPe2tgligDD",
-  "marketing": "pdt_0NWwiKSX8HIt9J3XMKwTc",
-  "financial": "pdt_0NWwiTNwN7L3sBq2vRVLT",
-  "general": "pdt_0NWwin55LtzECFv82lDrN"
-};
 
 const MentorshipPaymentPage = () => {
   const navigate = useNavigate();
@@ -89,6 +82,25 @@ const MentorshipPaymentPage = () => {
     staleTime: 0,
   });
 
+  // Fetch DodoPayment product IDs from database
+  const { data: dodoProducts } = useQuery({
+    queryKey: ["dodo-products-mentorship"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("dodo_products")
+        .select("product_key, dodo_product_id, price_bdt")
+        .eq("product_type", "mentorship")
+        .eq("is_active", true);
+      if (error) throw error;
+      // Convert to a map for easy lookup
+      const productMap: Record<string, string> = {};
+      data?.forEach((p: { product_key: string; dodo_product_id: string; price_bdt: number }) => {
+        productMap[p.product_key] = p.dodo_product_id;
+      });
+      return productMap;
+    },
+  });
+
   // Set first method as default when loaded
   useEffect(() => {
     if (paymentMethods && paymentMethods.length > 0 && !selectedMethodId) {
@@ -114,12 +126,18 @@ const MentorshipPaymentPage = () => {
       return;
     }
 
+    const productId = dodoProducts?.[sessionType];
+    if (!productId) {
+      toast.error("Product not configured. Please contact support or use manual payment.");
+      return;
+    }
+
     setDodoLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('dodo-checkout', {
         body: {
-          productId: DODO_MENTORSHIP_PRODUCTS[sessionType] || "prod_mentorship_default",
+          productId: productId,
           quantity: 1,
           customerEmail: user.email,
           customerName: user.user_metadata?.full_name || user.email,
