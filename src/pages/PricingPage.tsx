@@ -41,8 +41,7 @@ const PricingPage = () => {
         { text: "Basic Product Suggestion", included: true },
         { text: "Limited Sourcing Info", included: true },
         { text: "Full Execution Guide", included: false },
-        { text: "14-Day Plan", included: false },
-        { text: "PDF Download", included: false }
+        { text: "14-Day Plan", included: false }
       ],
       cta: "Free তে শুরু করুন",
       ctaLink: "/analyze",
@@ -62,8 +61,7 @@ const PricingPage = () => {
         { text: "Complete Delivery Plan", included: true },
         { text: "Marketing Strategy", included: true },
         { text: "14-Day Action Plan", included: true },
-        { text: "Failure Warning Analysis", included: true },
-        { text: "PDF Download", included: true }
+        { text: "Failure Warning Analysis", included: true }
       ],
       cta: "এখনই কিনুন",
       ctaLink: "/payment?plan=single",

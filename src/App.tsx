@@ -12,7 +12,6 @@ import AnalyzePage from "./pages/AnalyzePage";
 import ResultsPage from "./pages/ResultsPage";
 import PricingPage from "./pages/PricingPage";
 import WebsiteSuggestionPage from "./pages/WebsiteSuggestionPage";
-import DownloadPage from "./pages/DownloadPage";
 import AuthPage from "./pages/AuthPage";
 import HistoryPage from "./pages/HistoryPage";
 import PaymentPage from "./pages/PaymentPage";
@@ -51,7 +50,7 @@ const App = () => (
             <Route path="/results" element={<ResultsPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/website-suggestion" element={<WebsiteSuggestionPage />} />
-            <Route path="/download" element={<DownloadPage />} />
+            <Route path="/auth" element={<AuthPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/payment" element={<PaymentPage />} />

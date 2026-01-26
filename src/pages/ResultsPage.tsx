@@ -13,7 +13,6 @@ import {
   Megaphone,
   Calendar,
   AlertCircle,
-  Download,
   ArrowRight,
   Target,
   TrendingUp,
@@ -422,12 +421,6 @@ const ResultsPage = () => {
                 </Link>
               </Button>
             )}
-            <Button variant="default" size="lg" className="flex-1" asChild>
-              <Link to="/download">
-                <Download className="h-5 w-5" />
-                PDF Download করুন
-              </Link>
-            </Button>
             <Button variant="secondary" size="lg" asChild>
               <Link to="/analyze">
                 নতুন Idea Analyze করুন
