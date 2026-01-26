@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,8 +10,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useLeadTracking } from "@/hooks/useLeadTracking";
 import { useAnonymousTracking } from "@/hooks/useAnonymousTracking";
-import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { useAnalysisLimit } from "@/hooks/useAnalysisLimit";
+import { Sparkles, ArrowRight, Loader2, Lock, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
 
 export interface BusinessFormData {
   businessIdea: string;
@@ -43,6 +45,14 @@ const AnalyzePage = () => {
     trackWhatsApp,
     markAsCompleted 
   } = useAnonymousTracking();
+  const {
+    canAnalyze,
+    remainingFreeAnalyses,
+    needsSubscription,
+    hasActiveSubscription,
+    isLoading: limitLoading,
+    freeLimit
+  } = useAnalysisLimit();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<BusinessFormData>({
     businessIdea: "",
@@ -196,6 +206,56 @@ const AnalyzePage = () => {
     }
   };
 
+  // Show subscription required message if user has exhausted free analyses
+  if (needsSubscription) {
+    return (
+      <Layout>
+        <div className="section-container py-12 md:py-20">
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-primary/20">
+              <CardContent className="pt-8 pb-8 text-center space-y-6">
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                  <Lock className="h-10 w-10 text-primary" />
+                </div>
+                <div className="space-y-2">
+                  <h1 className="text-2xl font-bold">Free Analysis শেষ হয়ে গেছে!</h1>
+                  <p className="text-muted-foreground">
+                    আপনি ইতিমধ্যে {freeLimit}টি ফ্রি analysis ব্যবহার করেছেন।
+                    আরও analysis করতে subscription নিন।
+                  </p>
+                </div>
+                
+                <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-primary">
+                    <Crown className="h-5 w-5" />
+                    <span className="font-semibold">Premium Subscription</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Unlimited analysis + Full Report Access + Priority Support
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button asChild variant="hero" size="lg">
+                    <Link to="/pricing">
+                      <Crown className="h-5 w-5 mr-2" />
+                      Subscription নিন
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link to="/history">
+                      আগের Analysis দেখুন
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="section-container py-12 md:py-20">
@@ -208,6 +268,21 @@ const AnalyzePage = () => {
             <p className="text-muted-foreground">
               আপনার idea সম্পর্কে বিস্তারিত লিখুন — আমরা honest, practical analysis দেব
             </p>
+            
+            {/* Free analysis counter for logged in users */}
+            {user && !hasActiveSubscription && (
+              <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
+                <Sparkles className="h-4 w-4" />
+                Free Analysis বাকি: {remainingFreeAnalyses}/{freeLimit}
+              </div>
+            )}
+            
+            {user && hasActiveSubscription && (
+              <div className="mt-4 inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium">
+                <Crown className="h-4 w-4" />
+                Premium Subscriber — Unlimited Analysis
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -321,7 +396,7 @@ const AnalyzePage = () => {
               variant="hero" 
               size="xl" 
               className="w-full"
-              disabled={!formData.businessIdea.trim() || !formData.whatsappNumber.trim() || isLoading}
+              disabled={!formData.businessIdea.trim() || !formData.whatsappNumber.trim() || isLoading || limitLoading}
             >
               {isLoading ? (
                 <>
