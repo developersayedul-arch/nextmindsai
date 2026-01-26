@@ -70,7 +70,7 @@ const WebsiteSuggestionPage = () => {
     }
   ];
 
-  const whatsappNumber = "8801712345678";
+  const whatsappNumber = "8801585796477";
 
   const getWhatsAppLink = (message: string) => {
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
