@@ -64,23 +64,35 @@ interface MentorshipSession {
   created_at: string;
 }
 
-const sessionTypes = [
-  { value: "business-idea", label: "বিজনেস আইডিয়া ভ্যালিডেশন", price: 499 },
-  { value: "marketing", label: "মার্কেটিং স্ট্র্যাটেজি", price: 699 },
-  { value: "scaling", label: "বিজনেস স্কেলিং", price: 999 },
-  { value: "full-consultation", label: "সম্পূর্ণ বিজনেস প্ল্যান", price: 1499 },
-  { value: "tech-guidance", label: "টেক ও ওয়েবসাইট গাইডেন্স", price: 599 }
-];
-
 const AdminMentorship = () => {
   const [sessions, setSessions] = useState<MentorshipSession[]>([]);
+  const [sessionTypes, setSessionTypes] = useState<{value: string, label: string, price: number}[]>([]);
   const [loading, setLoading] = useState(true);
   const [editSession, setEditSession] = useState<MentorshipSession | null>(null);
   const [filter, setFilter] = useState<"all" | "pending" | "confirmed" | "completed">("all");
 
   useEffect(() => {
     fetchSessions();
+    fetchSessionTypes();
   }, []);
+
+  const fetchSessionTypes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("mentorship_session_types")
+        .select("session_key, label_bn, price")
+        .order("display_order");
+
+      if (error) throw error;
+      setSessionTypes((data || []).map(t => ({
+        value: t.session_key,
+        label: t.label_bn,
+        price: t.price
+      })));
+    } catch (err) {
+      console.error("Error fetching session types:", err);
+    }
+  };
 
   const fetchSessions = async () => {
     try {

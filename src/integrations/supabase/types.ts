@@ -438,6 +438,48 @@ export type Database = {
           },
         ]
       }
+      mentorship_session_types: {
+        Row: {
+          created_at: string
+          description_bn: string | null
+          display_order: number
+          duration_minutes: number
+          icon_name: string | null
+          id: string
+          is_active: boolean
+          label_bn: string
+          price: number
+          session_key: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description_bn?: string | null
+          display_order?: number
+          duration_minutes?: number
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          label_bn: string
+          price?: number
+          session_key: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description_bn?: string | null
+          display_order?: number
+          duration_minutes?: number
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          label_bn?: string
+          price?: number
+          session_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mentorship_sessions: {
         Row: {
           business_idea: string | null
@@ -492,6 +534,30 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           whatsapp_number?: string
+        }
+        Relationships: []
+      }
+      mentorship_settings: {
+        Row: {
+          coming_soon_message: string | null
+          id: string
+          is_enabled: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          coming_soon_message?: string | null
+          id?: string
+          is_enabled?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          coming_soon_message?: string | null
+          id?: string
+          is_enabled?: boolean
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }

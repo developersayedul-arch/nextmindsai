@@ -16,6 +16,7 @@ import {
   Radar,
   Wallet,
   Package,
+  Settings,
   MessageCircle
 } from "lucide-react";
 import {
@@ -83,6 +84,11 @@ const menuItems = [
     title: "মেন্টরশিপ", 
     url: "/admin/mentorship", 
     icon: GraduationCap
+  },
+  { 
+    title: "মেন্টরশিপ সেটিংস", 
+    url: "/admin/mentorship-settings", 
+    icon: Settings
   },
   { 
     title: "এনালাইসিস", 
