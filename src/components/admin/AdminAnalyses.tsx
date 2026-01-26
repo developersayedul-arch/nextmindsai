@@ -251,44 +251,164 @@ const AdminAnalyses = () => {
       </CardContent>
 
       <Dialog open={!!selectedAnalysis} onOpenChange={() => setSelectedAnalysis(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Analysis Details</DialogTitle>
+            <DialogTitle>Full Analysis Plan</DialogTitle>
           </DialogHeader>
           {selectedAnalysis && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-secondary/30 rounded-lg">
                 <div>
-                  <p className="text-sm text-muted-foreground">Business Idea</p>
-                  <p className="font-medium">{selectedAnalysis.business_idea}</p>
+                  <p className="text-xs text-muted-foreground">Business Idea</p>
+                  <p className="font-medium text-sm">{selectedAnalysis.business_idea}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Business Type</p>
-                  <p className="font-medium">{selectedAnalysis.business_type}</p>
+                  <p className="text-xs text-muted-foreground">Type</p>
+                  <p className="font-medium text-sm">{selectedAnalysis.business_type}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Budget Range</p>
-                  <p className="font-medium">{selectedAnalysis.budget_range}</p>
+                  <p className="text-xs text-muted-foreground">Budget</p>
+                  <p className="font-medium text-sm">{selectedAnalysis.budget_range}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">WhatsApp</p>
-                  <p className="font-medium">{selectedAnalysis.whatsapp_number}</p>
+                  <p className="text-xs text-muted-foreground">WhatsApp</p>
+                  <a 
+                    href={`https://wa.me/88${selectedAnalysis.whatsapp_number}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-sm text-green-600 hover:underline"
+                  >
+                    {selectedAnalysis.whatsapp_number}
+                  </a>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Location</p>
-                  <p className="font-medium">{selectedAnalysis.location || "N/A"}</p>
+                  <p className="text-xs text-muted-foreground">Location</p>
+                  <p className="font-medium text-sm">{selectedAnalysis.location || "N/A"}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <p className="font-medium">{selectedAnalysis.is_paid ? "Paid" : "Free"}</p>
+                  <p className="text-xs text-muted-foreground">Status</p>
+                  <p className="font-medium text-sm">{selectedAnalysis.is_paid ? "✅ Paid" : "Free"}</p>
                 </div>
               </div>
+
+              {/* Full Analysis Results */}
               {selectedAnalysis.results && (
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">Analysis Results (JSON)</p>
-                  <pre className="bg-secondary p-4 rounded-lg overflow-x-auto text-xs">
-                    {JSON.stringify(selectedAnalysis.results, null, 2)}
-                  </pre>
+                <div className="space-y-4">
+                  {/* Business Reality */}
+                  {selectedAnalysis.results.businessReality && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">১. Business Reality Check</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Type:</span> {selectedAnalysis.results.businessReality.type}</p>
+                        <p><span className="text-muted-foreground">Beginner Friendly:</span> {selectedAnalysis.results.businessReality.beginnerFriendly}</p>
+                        <p><span className="text-muted-foreground">Biggest Risk:</span> {selectedAnalysis.results.businessReality.biggestRisk}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Product Decision */}
+                  {selectedAnalysis.results.productDecision && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">২. Product / Service Decision</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Primary:</span> {selectedAnalysis.results.productDecision.primary}</p>
+                        <p><span className="text-muted-foreground">Backup:</span> {selectedAnalysis.results.productDecision.backup}</p>
+                        <p><span className="text-muted-foreground">Reasoning:</span> {selectedAnalysis.results.productDecision.reasoning}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Source Guide */}
+                  {selectedAnalysis.results.sourceGuide && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">৩. Product Source Guide</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Where:</span> {selectedAnalysis.results.sourceGuide.where}</p>
+                        <p><span className="text-muted-foreground">Cost Breakdown:</span> {selectedAnalysis.results.sourceGuide.costBreakdown}</p>
+                        <p><span className="text-muted-foreground">Common Mistake:</span> {selectedAnalysis.results.sourceGuide.commonMistake}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Delivery Plan */}
+                  {selectedAnalysis.results.deliveryPlan && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">৪. Delivery & Payment Plan</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Method:</span> {selectedAnalysis.results.deliveryPlan.method}</p>
+                        <p><span className="text-muted-foreground">Payment:</span> {selectedAnalysis.results.deliveryPlan.payment}</p>
+                        <p><span className="text-muted-foreground">Risk Warning:</span> {selectedAnalysis.results.deliveryPlan.riskWarning}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Website Decision */}
+                  {selectedAnalysis.results.websiteDecision && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">৫. Website Decision</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Verdict:</span> <span className="font-semibold">{selectedAnalysis.results.websiteDecision.verdict}</span></p>
+                        <p><span className="text-muted-foreground">Explanation:</span> {selectedAnalysis.results.websiteDecision.explanation}</p>
+                        {selectedAnalysis.results.websiteDecision.websiteType && (
+                          <p><span className="text-muted-foreground">Website Type:</span> {selectedAnalysis.results.websiteDecision.websiteType}</p>
+                        )}
+                        <p><span className="text-muted-foreground">Not To Build:</span> {selectedAnalysis.results.websiteDecision.notToBuild}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Marketing Plan */}
+                  {selectedAnalysis.results.marketingPlan && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">৬. Marketing Strategy</h3>
+                      <div className="space-y-2 text-sm">
+                        {selectedAnalysis.results.marketingPlan.first10Customers && (
+                          <div>
+                            <span className="text-muted-foreground">First 10 Customers:</span>
+                            <ul className="list-disc list-inside ml-2 mt-1">
+                              {selectedAnalysis.results.marketingPlan.first10Customers.map((item: string, i: number) => (
+                                <li key={i}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <p><span className="text-muted-foreground">Where to Market:</span> {selectedAnalysis.results.marketingPlan.whereToMarket}</p>
+                        <p><span className="text-muted-foreground">What to Say:</span> {selectedAnalysis.results.marketingPlan.whatToSay}</p>
+                        <p><span className="text-muted-foreground">What Not to Do:</span> {selectedAnalysis.results.marketingPlan.whatNotToDo}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Plan */}
+                  {selectedAnalysis.results.actionPlan && (
+                    <div className="border border-border rounded-lg p-4">
+                      <h3 className="font-semibold text-primary mb-3">৭. 14-Day Action Plan</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Day 1-3:</span> {selectedAnalysis.results.actionPlan.day1to3}</p>
+                        <p><span className="text-muted-foreground">Day 4-7:</span> {selectedAnalysis.results.actionPlan.day4to7}</p>
+                        <p><span className="text-muted-foreground">Day 8-14:</span> {selectedAnalysis.results.actionPlan.day8to14}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Failure Warning */}
+                  {selectedAnalysis.results.failureWarning && (
+                    <div className="border border-destructive/30 bg-destructive/5 rounded-lg p-4">
+                      <h3 className="font-semibold text-destructive mb-3">৮. Failure Warning</h3>
+                      <div className="space-y-2 text-sm">
+                        <p><span className="text-muted-foreground">Where Fail Occurs:</span> {selectedAnalysis.results.failureWarning.whereFailOccurs}</p>
+                        <p><span className="text-muted-foreground">Money Loss Mistake:</span> {selectedAnalysis.results.failureWarning.moneyLossMistake}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Fallback Raw JSON */}
+              {!selectedAnalysis.results && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No analysis results available
                 </div>
               )}
             </div>
