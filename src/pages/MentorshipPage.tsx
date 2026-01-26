@@ -21,7 +21,11 @@ import {
   ArrowRight,
   MessageCircle,
   Star,
-  Shield
+  Shield,
+  Eye,
+  EyeOff,
+  Mail,
+  Lock
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -77,14 +81,24 @@ const MentorshipPage = () => {
     businessIdea: "",
     preferredDate: "",
     preferredTime: "",
-    topics: [] as string[]
+    topics: [] as string[],
+    // Guest booking fields
+    email: "",
+    password: "",
+    confirmPassword: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateWhatsApp = (number: string): boolean => {
     const cleaned = number.replace(/[\s-]/g, '');
     const bdPattern = /^(01[3-9]\d{8}|(\+?880)?1[3-9]\d{8})$/;
     return bdPattern.test(cleaned);
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
   };
 
   const handleSubmit = async () => {
@@ -103,16 +117,62 @@ const MentorshipPage = () => {
       return;
     }
 
+    // Validate guest booking fields if not logged in
+    if (!user) {
+      if (!formData.email || !validateEmail(formData.email)) {
+        toast.error("সঠিক Email দিন");
+        return;
+      }
+      if (!formData.password || formData.password.length < 6) {
+        toast.error("Password কমপক্ষে ৬ অক্ষরের হতে হবে");
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Password match করছে না");
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
+      let currentUserId = user?.id;
+
+      // Auto-create account for guest users
+      if (!user && formData.email && formData.password) {
+        const redirectUrl = `${window.location.origin}/`;
+        
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            emailRedirectTo: redirectUrl
+          }
+        });
+
+        if (authError) {
+          // Check if user already exists
+          if (authError.message.includes("already registered")) {
+            toast.error("এই Email দিয়ে আগেই account আছে। Login করুন।");
+            setIsSubmitting(false);
+            return;
+          }
+          throw authError;
+        }
+
+        if (authData.user) {
+          currentUserId = authData.user.id;
+          toast.success("Account তৈরি হয়েছে!");
+        }
+      }
+
       const sessionDate = new Date(`${formData.preferredDate}T${formData.preferredTime}`);
       const selectedSession = sessionTypes.find(s => s.value === selectedType);
 
       const { data: session, error } = await supabase
         .from("mentorship_sessions")
         .insert({
-          user_id: user?.id || null,
+          user_id: currentUserId || null,
           session_type: selectedType,
           session_date: sessionDate.toISOString(),
           duration_minutes: selectedSession?.duration || 60,
@@ -329,6 +389,75 @@ const MentorshipPage = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Guest Booking Account Section - Only show if not logged in */}
+              {!user && (
+                <div className="border border-primary/20 bg-primary/5 p-4 rounded-xl space-y-4">
+                  <div className="flex items-center gap-2 text-primary">
+                    <Shield className="h-5 w-5" />
+                    <span className="font-semibold">Account তৈরি করুন</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    বুকিং করতে আপনার একটি account তৈরি হবে। পরে login করে বুকিং ট্র্যাক করতে পারবেন।
+                  </p>
+                  
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      Email *
+                    </Label>
+                    <Input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Lock className="h-4 w-4 text-muted-foreground" />
+                        Password *
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="কমপক্ষে ৬ অক্ষর"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Lock className="h-4 w-4 text-muted-foreground" />
+                        Confirm Password *
+                      </Label>
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="আবার Password দিন"
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    ইতিমধ্যে account আছে?{" "}
+                    <a href="/auth" className="text-primary hover:underline font-medium">
+                      Login করুন
+                    </a>
+                  </p>
+                </div>
+              )}
 
               <div className="bg-primary/5 p-4 rounded-lg">
                 <div className="flex justify-between items-center mb-2">
