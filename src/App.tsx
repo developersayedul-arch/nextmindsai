@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "next-themes";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import Index from "./pages/Index";
 import AnalyzePage from "./pages/AnalyzePage";
 import ResultsPage from "./pages/ResultsPage";
@@ -35,13 +37,15 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
+  <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <FloatingWhatsApp />
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/analyze" element={<AnalyzePage />} />
             <Route path="/results" element={<ResultsPage />} />
@@ -66,13 +70,14 @@ const App = () => (
             <Route path="/admin/tracking" element={<AdminTrackingPage />} />
             <Route path="/admin/payment-methods" element={<AdminPaymentMethodsPage />} />
             <Route path="/admin/dodo-products" element={<AdminDodoProductsPage />} />
-            <Route path="/admin-login" element={<AdminLoginPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+              <Route path="/admin-login" element={<AdminLoginPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

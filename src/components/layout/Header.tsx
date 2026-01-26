@@ -5,6 +5,7 @@ import { useAdminRole } from "@/hooks/useAdminRole";
 import { Leaf, User, LogOut, History, Shield, Zap, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -128,7 +129,8 @@ const Header = () => {
           )}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           {user ? (
             <>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
