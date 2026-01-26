@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "next-themes";
-import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import ChatWidget from "@/components/ChatWidget";
 import Index from "./pages/Index";
 import AnalyzePage from "./pages/AnalyzePage";
 import ResultsPage from "./pages/ResultsPage";
@@ -31,6 +31,7 @@ import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminTrackingPage from "./pages/admin/AdminTrackingPage";
 import AdminPaymentMethodsPage from "./pages/admin/AdminPaymentMethodsPage";
 import AdminDodoProductsPage from "./pages/admin/AdminDodoProductsPage";
+import AdminChatPage from "./pages/admin/AdminChatPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,7 +44,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <FloatingWhatsApp />
+            <ChatWidget />
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/analyze" element={<AnalyzePage />} />
@@ -69,6 +70,7 @@ const App = () => (
             <Route path="/admin/tracking" element={<AdminTrackingPage />} />
             <Route path="/admin/payment-methods" element={<AdminPaymentMethodsPage />} />
             <Route path="/admin/dodo-products" element={<AdminDodoProductsPage />} />
+            <Route path="/admin/chat" element={<AdminChatPage />} />
               <Route path="/admin-login" element={<AdminLoginPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -15,7 +15,8 @@ import {
   CreditCard,
   Radar,
   Wallet,
-  Package
+  Package,
+  MessageCircle
 } from "lucide-react";
 import {
   Sidebar,
@@ -37,6 +38,11 @@ const menuItems = [
     title: "ড্যাশবোর্ড", 
     url: "/admin", 
     icon: LayoutDashboard
+  },
+  { 
+    title: "Live Chat", 
+    url: "/admin/chat", 
+    icon: MessageCircle
   },
   { 
     title: "লিডস", 
