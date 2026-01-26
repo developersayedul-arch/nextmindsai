@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMentorshipSettings } from "@/hooks/useMentorshipSettings";
 import { 
   Users, 
   Calendar, 
@@ -25,56 +26,45 @@ import {
   Eye,
   EyeOff,
   Mail,
-  Lock
+  Lock,
+  Loader2,
+  Rocket
 } from "lucide-react";
 import { toast } from "sonner";
+import type { LucideIcon } from "lucide-react";
 
-const sessionTypes = [
-  { 
-    value: "business-idea", 
-    label: "বিজনেস আইডিয়া ভ্যালিডেশন", 
-    price: 499,
-    icon: Lightbulb,
-    description: "আপনার আইডিয়া কতটা viable তা জানুন",
-    duration: 45
-  },
-  { 
-    value: "marketing", 
-    label: "মার্কেটিং স্ট্র্যাটেজি", 
-    price: 699,
-    icon: Megaphone,
-    description: "প্রথম ১০০ কাস্টমার পাওয়ার প্ল্যান",
-    duration: 60
-  },
-  { 
-    value: "scaling", 
-    label: "বিজনেস স্কেলিং", 
-    price: 999,
-    icon: TrendingUp,
-    description: "বিজনেস grow করার গাইডলাইন",
-    duration: 60
-  },
-  { 
-    value: "full-consultation", 
-    label: "সম্পূর্ণ বিজনেস প্ল্যান", 
-    price: 1499,
-    icon: Star,
-    description: "A-Z বিজনেস রোডম্যাপ",
-    duration: 90
-  },
-  { 
-    value: "tech-guidance", 
-    label: "টেক ও ওয়েবসাইট গাইডেন্স", 
-    price: 599,
-    icon: Code,
-    description: "ওয়েবসাইট ও এপ ডিসিশন",
-    duration: 45
-  }
-];
+const iconMap: Record<string, LucideIcon> = {
+  Lightbulb,
+  Megaphone,
+  TrendingUp,
+  Star,
+  Code
+};
+
+interface SessionType {
+  value: string;
+  label: string;
+  price: number;
+  icon: LucideIcon;
+  description: string;
+  duration: number;
+}
 
 const MentorshipPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { settings, sessionTypes: dbSessionTypes, loading: settingsLoading } = useMentorshipSettings();
+  
+  // Transform DB session types to component format
+  const sessionTypes: SessionType[] = dbSessionTypes.map(s => ({
+    value: s.session_key,
+    label: s.label_bn,
+    price: s.price,
+    icon: iconMap[s.icon_name || "Lightbulb"] || Lightbulb,
+    description: s.description_bn || "",
+    duration: s.duration_minutes
+  }));
+
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     whatsappNumber: "",
@@ -210,6 +200,65 @@ const MentorshipPage = () => {
     "ওয়েবসাইট/এপ ডিসিশন",
     "স্কেলিং প্ল্যান"
   ];
+
+  // Loading state
+  if (settingsLoading) {
+    return (
+      <Layout>
+        <div className="section-container py-20 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  // Coming Soon state - when mentorship is disabled
+  if (settings && !settings.is_enabled) {
+    return (
+      <Layout>
+        <div className="section-container py-20">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 gradient-hero rounded-full mb-6">
+              <Rocket className="h-10 w-10 text-primary-foreground" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              মেন্টরশিপ সেশন{" "}
+              <span 
+                style={{
+                  background: 'linear-gradient(135deg, #e85a3c 0%, #f5734d 50%, #d94a2e 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                শীঘ্রই আসছে
+              </span>
+            </h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              {settings.coming_soon_message || "মেন্টরশিপ সেশন শীঘ্রই আসছে! Stay tuned."}
+            </p>
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
+              <div className="p-4 bg-secondary/30 rounded-xl">
+                <Shield className="h-6 w-6 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">এক্সপার্ট মেন্টর</p>
+              </div>
+              <div className="p-4 bg-secondary/30 rounded-xl">
+                <Calendar className="h-6 w-6 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">ফ্লেক্সিবল সময়</p>
+              </div>
+              <div className="p-4 bg-secondary/30 rounded-xl">
+                <MessageCircle className="h-6 w-6 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">ফলো-আপ সাপোর্ট</p>
+              </div>
+            </div>
+            <Button variant="outline" onClick={() => navigate("/")}>
+              হোমে ফিরুন
+            </Button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
