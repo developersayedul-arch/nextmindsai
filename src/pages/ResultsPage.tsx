@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { BusinessFormData } from "./AnalyzePage";
 import {
   AlertTriangle,
@@ -16,7 +17,12 @@ import {
   ArrowRight,
   Target,
   TrendingUp,
-  Loader2
+  Loader2,
+  BarChart3,
+  Users,
+  DollarSign,
+  Gauge,
+  Sparkles
 } from "lucide-react";
 
 // Analysis result type from AI
@@ -63,6 +69,38 @@ interface AnalysisResult {
     whereFailOccurs: string;
     moneyLossMistake: string;
   };
+  // New sections
+  marketDemand?: {
+    demandLevel: string;
+    trendAnalysis: string;
+    seasonalPattern: string;
+    targetAudienceSize: string;
+  };
+  competitorAnalysis?: {
+    mainCompetitors: string;
+    theirPricing: string;
+    theirWeakness: string;
+    saturationLevel: string;
+  };
+  monetizationStrategies?: {
+    revenueModel: string;
+    pricingRecommendation: string;
+    upsellOpportunities: string;
+    breakEvenTimeline: string;
+  };
+  realityScore?: {
+    overall: number;
+    market: number;
+    competition: number;
+    executionDifficulty: number;
+    profitPotential: number;
+    verdict: string;
+  };
+  differentiatorEngine?: {
+    uniqueSellingPoint: string;
+    howToBeDifferent: string;
+    marketingEmphasis: string;
+  };
 }
 
 // Validate analysis data structure
@@ -85,6 +123,25 @@ const validateAnalysisData = (data: unknown): data is AnalysisResult => {
   return requiredSections.every(section => 
     analysis[section] && typeof analysis[section] === 'object'
   );
+};
+
+// Helper function to get score color
+const getScoreColor = (score: number): string => {
+  if (score >= 7) return "text-success";
+  if (score >= 4) return "text-warning";
+  return "text-destructive";
+};
+
+const getScoreBarColor = (score: number): string => {
+  if (score >= 7) return "bg-success";
+  if (score >= 4) return "bg-warning";
+  return "bg-destructive";
+};
+
+const getScoreBgColor = (score: number): string => {
+  if (score >= 7) return "bg-success/10 border-success/20";
+  if (score >= 4) return "bg-warning/10 border-warning/20";
+  return "bg-destructive/10 border-destructive/20";
 };
 
 const ResultsPage = () => {
@@ -411,7 +468,209 @@ const ResultsPage = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* NEW SECTIONS - Market Demand Analysis */}
+          {analysis.marketDemand && (
+            <div className="result-card animate-slide-up" style={{ animationDelay: "800ms" }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="gradient-hero p-2 rounded-lg">
+                  <BarChart3 className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h2 className="text-xl font-semibold">৯. Market Demand Analysis</h2>
+              </div>
+              <div className="space-y-3">
+                <div className="highlight-box">
+                  <p className="text-sm text-muted-foreground mb-1">চাহিদার মাত্রা</p>
+                  <p className="font-medium">{analysis.marketDemand.demandLevel}</p>
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">Trend Analysis</p>
+                  <p className="font-medium">{analysis.marketDemand.trendAnalysis}</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Seasonal Pattern</p>
+                    <p className="font-medium">{analysis.marketDemand.seasonalPattern}</p>
+                  </div>
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Target Audience Size</p>
+                    <p className="font-medium">{analysis.marketDemand.targetAudienceSize}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Competitor Analysis */}
+          {analysis.competitorAnalysis && (
+            <div className="result-card animate-slide-up" style={{ animationDelay: "900ms" }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="gradient-hero p-2 rounded-lg">
+                  <Users className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h2 className="text-xl font-semibold">১০. Competitor Analysis</h2>
+                <span className={`ml-auto px-3 py-1 rounded-full text-sm font-medium ${
+                  analysis.competitorAnalysis.saturationLevel.toLowerCase().includes("high")
+                    ? "bg-destructive/20 text-destructive"
+                    : analysis.competitorAnalysis.saturationLevel.toLowerCase().includes("medium")
+                    ? "bg-warning/20 text-warning"
+                    : "bg-success/20 text-success"
+                }`}>
+                  Saturation: {analysis.competitorAnalysis.saturationLevel.split("-")[0].trim()}
+                </span>
+              </div>
+              <div className="space-y-3">
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">মূল প্রতিযোগী</p>
+                  <p className="font-medium">{analysis.competitorAnalysis.mainCompetitors}</p>
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">তাদের Pricing</p>
+                  <p className="font-medium">{analysis.competitorAnalysis.theirPricing}</p>
+                </div>
+                <div className="highlight-box">
+                  <p className="text-sm text-muted-foreground mb-1">তাদের দুর্বলতা (আপনার সুযোগ)</p>
+                  <p className="font-medium">{analysis.competitorAnalysis.theirWeakness}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Monetization Strategies */}
+          {analysis.monetizationStrategies && (
+            <div className="result-card animate-slide-up" style={{ animationDelay: "1000ms" }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="gradient-hero p-2 rounded-lg">
+                  <DollarSign className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h2 className="text-xl font-semibold">১১. Monetization Strategies</h2>
+              </div>
+              <div className="space-y-3">
+                <div className="highlight-box">
+                  <p className="text-sm text-muted-foreground mb-1">Revenue Model</p>
+                  <p className="font-medium">{analysis.monetizationStrategies.revenueModel}</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-success/10 border border-success/20 p-4 rounded-lg">
+                    <p className="text-sm text-success mb-1">Pricing Recommendation</p>
+                    <p className="font-medium">{analysis.monetizationStrategies.pricingRecommendation}</p>
+                  </div>
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Break-even Timeline</p>
+                    <p className="font-medium">{analysis.monetizationStrategies.breakEvenTimeline}</p>
+                  </div>
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">Upsell / Cross-sell</p>
+                  <p className="font-medium">{analysis.monetizationStrategies.upsellOpportunities}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Reality Score - HIGHLIGHTED */}
+          {analysis.realityScore && (
+            <div className="result-card animate-slide-up border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-transparent" style={{ animationDelay: "1100ms" }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="gradient-hero p-2 rounded-lg">
+                  <Gauge className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h2 className="text-xl font-semibold">১২. Reality Score (Harsh & Honest)</h2>
+              </div>
+              
+              {/* Overall Score */}
+              <div className={`p-6 rounded-xl mb-6 border ${getScoreBgColor(analysis.realityScore.overall)}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-lg font-semibold">Overall Viability</span>
+                  <span className={`text-4xl font-bold ${getScoreColor(analysis.realityScore.overall)}`}>
+                    {analysis.realityScore.overall}/10
+                  </span>
+                </div>
+                <div className="w-full bg-secondary/50 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-1000 ${getScoreBarColor(analysis.realityScore.overall)}`}
+                    style={{ width: `${analysis.realityScore.overall * 10}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Category Scores */}
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-muted-foreground">Market Demand</span>
+                    <span className={`font-bold ${getScoreColor(analysis.realityScore.market)}`}>
+                      {analysis.realityScore.market}/10
+                    </span>
+                  </div>
+                  <Progress value={analysis.realityScore.market * 10} className="h-2" />
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-muted-foreground">Competition Level</span>
+                    <span className={`font-bold ${getScoreColor(analysis.realityScore.competition)}`}>
+                      {analysis.realityScore.competition}/10
+                    </span>
+                  </div>
+                  <Progress value={analysis.realityScore.competition * 10} className="h-2" />
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-muted-foreground">Execution Ease</span>
+                    <span className={`font-bold ${getScoreColor(analysis.realityScore.executionDifficulty)}`}>
+                      {analysis.realityScore.executionDifficulty}/10
+                    </span>
+                  </div>
+                  <Progress value={analysis.realityScore.executionDifficulty * 10} className="h-2" />
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-muted-foreground">Profit Potential</span>
+                    <span className={`font-bold ${getScoreColor(analysis.realityScore.profitPotential)}`}>
+                      {analysis.realityScore.profitPotential}/10
+                    </span>
+                  </div>
+                  <Progress value={analysis.realityScore.profitPotential * 10} className="h-2" />
+                </div>
+              </div>
+
+              {/* Verdict */}
+              <div className={`p-4 rounded-lg border ${getScoreBgColor(analysis.realityScore.overall)}`}>
+                <p className={`font-semibold mb-1 ${getScoreColor(analysis.realityScore.overall)}`}>
+                  সৎ মতামত (Harsh Verdict)
+                </p>
+                <p className="font-medium">{analysis.realityScore.verdict}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Differentiator Engine */}
+          {analysis.differentiatorEngine && (
+            <div className="result-card animate-slide-up border-2 border-success/20 bg-gradient-to-br from-success/5 to-transparent" style={{ animationDelay: "1200ms" }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-success p-2 rounded-lg">
+                  <Sparkles className="h-5 w-5 text-success-foreground" />
+                </div>
+                <h2 className="text-xl font-semibold">১৩. Differentiator Engine</h2>
+              </div>
+              <div className="space-y-4">
+                <div className="highlight-box">
+                  <p className="text-sm text-muted-foreground mb-1">আপনার Unique Selling Point</p>
+                  <p className="font-medium text-lg">{analysis.differentiatorEngine.uniqueSellingPoint}</p>
+                </div>
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">কিভাবে আলাদা হবেন</p>
+                  <p className="font-medium">{analysis.differentiatorEngine.howToBeDifferent}</p>
+                </div>
+                <div className="bg-success/10 border border-success/20 p-4 rounded-lg">
+                  <p className="text-sm text-success mb-1 flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" /> Marketing এ Emphasize করুন
+                  </p>
+                  <p className="font-medium">{analysis.differentiatorEngine.marketingEmphasis}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             {showWebsiteSuggestion && (
               <Button variant="hero" size="lg" className="flex-1" asChild>
