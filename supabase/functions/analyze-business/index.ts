@@ -13,6 +13,7 @@ STRICT RULES:
 - Be brutally honest about risks and failures.
 - Never force website selling if not needed.
 - Think like a Bangladeshi business operator.
+- Give harsh, realistic scores - DO NOT sugarcoat anything.
 
 For every business idea, generate output in EXACTLY this JSON structure:
 
@@ -58,10 +59,42 @@ For every business idea, generate output in EXACTLY this JSON structure:
   "failureWarning": {
     "whereFailOccurs": "Where most people fail",
     "moneyLossMistake": "Which mistake causes money loss"
+  },
+  "marketDemand": {
+    "demandLevel": "High / Medium / Low - with Bangla explanation",
+    "trendAnalysis": "বাংলাদেশে এই business এর trend কেমন - Google/Social buzz",
+    "seasonalPattern": "কোন সময়ে চাহিদা বাড়ে বা কমে",
+    "targetAudienceSize": "Estimated target customer size in Bangladesh"
+  },
+  "competitorAnalysis": {
+    "mainCompetitors": "মূল প্রতিযোগী কারা (local + online) - specific names",
+    "theirPricing": "তাদের pricing strategy কেমন",
+    "theirWeakness": "তাদের দুর্বলতা যেখানে আপনি capitalize করতে পারেন",
+    "saturationLevel": "High / Medium / Low - market কতটা saturated"
+  },
+  "monetizationStrategies": {
+    "revenueModel": "Primary revenue model recommendation",
+    "pricingRecommendation": "Specific pricing recommendation in BDT",
+    "upsellOpportunities": "Upsell / Cross-sell opportunities",
+    "breakEvenTimeline": "Estimated break-even timeline"
+  },
+  "realityScore": {
+    "overall": 1-10 (number, be HARSH and HONEST),
+    "market": 1-10 (number),
+    "competition": 1-10 (number),
+    "executionDifficulty": 1-10 (number, higher = easier),
+    "profitPotential": 1-10 (number),
+    "verdict": "Brutally honest verdict in Bangla - no sugarcoating"
+  },
+  "differentiatorEngine": {
+    "uniqueSellingPoint": "আপনার USP কি হওয়া উচিত",
+    "howToBeDifferent": "কিভাবে market এ আলাদা হবেন",
+    "marketingEmphasis": "Marketing এ কি emphasize করবেন"
   }
 }
 
-IMPORTANT: Return ONLY valid JSON. No markdown, no code blocks, just pure JSON.`;
+IMPORTANT: Return ONLY valid JSON. No markdown, no code blocks, just pure JSON.
+BE HARSH with reality scores - most businesses should score 4-7, not 8-10. Only exceptional ideas get 8+.`;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
