@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import RealityScoreGauge from "@/components/RealityScoreGauge";
 import { BusinessFormData } from "./AnalyzePage";
 import {
   AlertTriangle,
@@ -569,76 +570,113 @@ const ResultsPage = () => {
 
           {/* Reality Score - HIGHLIGHTED */}
           {analysis.realityScore && (
-            <div className="result-card animate-slide-up border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-transparent" style={{ animationDelay: "1100ms" }}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="gradient-hero p-2 rounded-lg">
-                  <Gauge className="h-5 w-5 text-primary-foreground" />
+            <div className="result-card animate-slide-up border-2 border-primary/40 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent shadow-lg" style={{ animationDelay: "1100ms" }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="gradient-hero p-2.5 rounded-lg shadow-lg">
+                  <Gauge className="h-6 w-6 text-primary-foreground" />
                 </div>
-                <h2 className="text-xl font-semibold">১২. Reality Score (Harsh & Honest)</h2>
+                <h2 className="text-2xl font-bold">১২. Reality Score (Harsh & Honest)</h2>
               </div>
               
-              {/* Overall Score */}
-              <div className={`p-6 rounded-xl mb-6 border ${getScoreBgColor(analysis.realityScore.overall)}`}>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-lg font-semibold">Overall Viability</span>
-                  <span className={`text-4xl font-bold ${getScoreColor(analysis.realityScore.overall)}`}>
-                    {analysis.realityScore.overall}/10
-                  </span>
+              {/* Gauge and Overall Score */}
+              <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
+                {/* Circular Gauge */}
+                <div className="flex-shrink-0">
+                  <RealityScoreGauge score={analysis.realityScore.overall} size={180} />
                 </div>
-                <div className="w-full bg-secondary/50 rounded-full h-4 overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-1000 ${getScoreBarColor(analysis.realityScore.overall)}`}
-                    style={{ width: `${analysis.realityScore.overall * 10}%` }}
-                  />
-                </div>
-              </div>
+                
+                {/* Score breakdown bars */}
+                <div className="flex-1 w-full space-y-4">
+                  {/* Market Demand */}
+                  <div className="group">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-sm font-medium text-foreground">Market Demand</span>
+                      <span className={`text-lg font-bold ${getScoreColor(analysis.realityScore.market)}`}>
+                        {analysis.realityScore.market}/10
+                      </span>
+                    </div>
+                    <div className="w-full bg-secondary/40 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${getScoreBarColor(analysis.realityScore.market)} shadow-sm`}
+                        style={{ 
+                          width: `${analysis.realityScore.market * 10}%`,
+                          boxShadow: `0 0 10px ${analysis.realityScore.market >= 7 ? 'rgb(34 197 94 / 0.5)' : analysis.realityScore.market >= 4 ? 'rgb(245 158 11 / 0.5)' : 'rgb(239 68 68 / 0.5)'}`
+                        }}
+                      />
+                    </div>
+                  </div>
 
-              {/* Category Scores */}
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
-                <div className="bg-secondary/30 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-muted-foreground">Market Demand</span>
-                    <span className={`font-bold ${getScoreColor(analysis.realityScore.market)}`}>
-                      {analysis.realityScore.market}/10
-                    </span>
+                  {/* Competition Level */}
+                  <div className="group">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-sm font-medium text-foreground">Competition Level</span>
+                      <span className={`text-lg font-bold ${getScoreColor(analysis.realityScore.competition)}`}>
+                        {analysis.realityScore.competition}/10
+                      </span>
+                    </div>
+                    <div className="w-full bg-secondary/40 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${getScoreBarColor(analysis.realityScore.competition)} shadow-sm`}
+                        style={{ 
+                          width: `${analysis.realityScore.competition * 10}%`,
+                          boxShadow: `0 0 10px ${analysis.realityScore.competition >= 7 ? 'rgb(34 197 94 / 0.5)' : analysis.realityScore.competition >= 4 ? 'rgb(245 158 11 / 0.5)' : 'rgb(239 68 68 / 0.5)'}`
+                        }}
+                      />
+                    </div>
                   </div>
-                  <Progress value={analysis.realityScore.market * 10} className="h-2" />
-                </div>
-                <div className="bg-secondary/30 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-muted-foreground">Competition Level</span>
-                    <span className={`font-bold ${getScoreColor(analysis.realityScore.competition)}`}>
-                      {analysis.realityScore.competition}/10
-                    </span>
+
+                  {/* Execution Ease */}
+                  <div className="group">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-sm font-medium text-foreground">Execution Ease</span>
+                      <span className={`text-lg font-bold ${getScoreColor(analysis.realityScore.executionDifficulty)}`}>
+                        {analysis.realityScore.executionDifficulty}/10
+                      </span>
+                    </div>
+                    <div className="w-full bg-secondary/40 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${getScoreBarColor(analysis.realityScore.executionDifficulty)} shadow-sm`}
+                        style={{ 
+                          width: `${analysis.realityScore.executionDifficulty * 10}%`,
+                          boxShadow: `0 0 10px ${analysis.realityScore.executionDifficulty >= 7 ? 'rgb(34 197 94 / 0.5)' : analysis.realityScore.executionDifficulty >= 4 ? 'rgb(245 158 11 / 0.5)' : 'rgb(239 68 68 / 0.5)'}`
+                        }}
+                      />
+                    </div>
                   </div>
-                  <Progress value={analysis.realityScore.competition * 10} className="h-2" />
-                </div>
-                <div className="bg-secondary/30 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-muted-foreground">Execution Ease</span>
-                    <span className={`font-bold ${getScoreColor(analysis.realityScore.executionDifficulty)}`}>
-                      {analysis.realityScore.executionDifficulty}/10
-                    </span>
+
+                  {/* Profit Potential */}
+                  <div className="group">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-sm font-medium text-foreground">Profit Potential</span>
+                      <span className={`text-lg font-bold ${getScoreColor(analysis.realityScore.profitPotential)}`}>
+                        {analysis.realityScore.profitPotential}/10
+                      </span>
+                    </div>
+                    <div className="w-full bg-secondary/40 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${getScoreBarColor(analysis.realityScore.profitPotential)} shadow-sm`}
+                        style={{ 
+                          width: `${analysis.realityScore.profitPotential * 10}%`,
+                          boxShadow: `0 0 10px ${analysis.realityScore.profitPotential >= 7 ? 'rgb(34 197 94 / 0.5)' : analysis.realityScore.profitPotential >= 4 ? 'rgb(245 158 11 / 0.5)' : 'rgb(239 68 68 / 0.5)'}`
+                        }}
+                      />
+                    </div>
                   </div>
-                  <Progress value={analysis.realityScore.executionDifficulty * 10} className="h-2" />
-                </div>
-                <div className="bg-secondary/30 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-muted-foreground">Profit Potential</span>
-                    <span className={`font-bold ${getScoreColor(analysis.realityScore.profitPotential)}`}>
-                      {analysis.realityScore.profitPotential}/10
-                    </span>
-                  </div>
-                  <Progress value={analysis.realityScore.profitPotential * 10} className="h-2" />
                 </div>
               </div>
 
               {/* Verdict */}
-              <div className={`p-4 rounded-lg border ${getScoreBgColor(analysis.realityScore.overall)}`}>
-                <p className={`font-semibold mb-1 ${getScoreColor(analysis.realityScore.overall)}`}>
-                  সৎ মতামত (Harsh Verdict)
-                </p>
-                <p className="font-medium">{analysis.realityScore.verdict}</p>
+              <div className={`p-5 rounded-xl border-2 ${getScoreBgColor(analysis.realityScore.overall)} ${
+                analysis.realityScore.overall >= 7 ? 'border-success/40' : 
+                analysis.realityScore.overall >= 4 ? 'border-warning/40' : 'border-destructive/40'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className={`h-5 w-5 ${getScoreColor(analysis.realityScore.overall)}`} />
+                  <p className={`font-bold text-lg ${getScoreColor(analysis.realityScore.overall)}`}>
+                    সৎ মতামত (Harsh Verdict)
+                  </p>
+                </div>
+                <p className="font-medium text-foreground">{analysis.realityScore.verdict}</p>
               </div>
             </div>
           )}
