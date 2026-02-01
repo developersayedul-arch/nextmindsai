@@ -17,7 +17,8 @@ import {
   Wallet,
   Package,
   Settings,
-  MessageCircle
+  MessageCircle,
+  Laptop
 } from "lucide-react";
 import {
   Sidebar,
@@ -44,6 +45,11 @@ const menuItems = [
     title: "Live Chat", 
     url: "/admin/chat", 
     icon: MessageCircle
+  },
+  { 
+    title: "Website Leads", 
+    url: "/admin/website-leads", 
+    icon: Laptop
   },
   { 
     title: "লিডস", 

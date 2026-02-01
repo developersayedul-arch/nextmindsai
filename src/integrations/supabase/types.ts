@@ -825,6 +825,51 @@ export type Database = {
         }
         Relationships: []
       }
+      website_leads: {
+        Row: {
+          budget_range: string | null
+          business_idea: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          service_interest: string
+          source: string | null
+          status: string
+          updated_at: string
+          whatsapp_number: string
+        }
+        Insert: {
+          budget_range?: string | null
+          business_idea?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          service_interest: string
+          source?: string | null
+          status?: string
+          updated_at?: string
+          whatsapp_number: string
+        }
+        Update: {
+          budget_range?: string | null
+          business_idea?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          service_interest?: string
+          source?: string | null
+          status?: string
+          updated_at?: string
+          whatsapp_number?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
