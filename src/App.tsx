@@ -12,6 +12,7 @@ import AnalyzePage from "./pages/AnalyzePage";
 import ResultsPage from "./pages/ResultsPage";
 import PricingPage from "./pages/PricingPage";
 import WebsiteSuggestionPage from "./pages/WebsiteSuggestionPage";
+import ServicesPage from "./pages/ServicesPage";
 import AuthPage from "./pages/AuthPage";
 import HistoryPage from "./pages/HistoryPage";
 import PaymentPage from "./pages/PaymentPage";
@@ -33,6 +34,7 @@ import AdminTrackingPage from "./pages/admin/AdminTrackingPage";
 import AdminPaymentMethodsPage from "./pages/admin/AdminPaymentMethodsPage";
 import AdminDodoProductsPage from "./pages/admin/AdminDodoProductsPage";
 import AdminChatPage from "./pages/admin/AdminChatPage";
+import AdminWebsiteLeadsPage from "./pages/admin/AdminWebsiteLeadsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +54,7 @@ const App = () => (
             <Route path="/results" element={<ResultsPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/website-suggestion" element={<WebsiteSuggestionPage />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/history" element={<HistoryPage />} />
@@ -73,6 +76,7 @@ const App = () => (
             <Route path="/admin/payment-methods" element={<AdminPaymentMethodsPage />} />
             <Route path="/admin/dodo-products" element={<AdminDodoProductsPage />} />
             <Route path="/admin/chat" element={<AdminChatPage />} />
+            <Route path="/admin/website-leads" element={<AdminWebsiteLeadsPage />} />
               <Route path="/admin-login" element={<AdminLoginPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
