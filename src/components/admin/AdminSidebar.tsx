@@ -18,7 +18,8 @@ import {
   Package,
   Settings,
   MessageCircle,
-  Laptop
+  Laptop,
+  FileEdit
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,6 +51,11 @@ const menuItems = [
     title: "Website Leads", 
     url: "/admin/website-leads", 
     icon: Laptop
+  },
+  { 
+    title: "ব্লগ পোস্ট", 
+    url: "/admin/blog-posts", 
+    icon: FileEdit
   },
   { 
     title: "লিডস", 
