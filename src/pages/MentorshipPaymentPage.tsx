@@ -119,31 +119,23 @@ const MentorshipPaymentPage = () => {
     toast.success("নম্বর copy হয়েছে!");
   };
 
-  // Handle DodoPayment checkout for mentorship
-  const handleDodoCheckout = async () => {
+  // Handle SA Pay Core checkout for mentorship
+  const handleGatewayCheckout = async () => {
     if (!user) {
       toast.error("Please login first");
-      return;
-    }
-
-    const productId = dodoProducts?.[sessionType];
-    if (!productId) {
-      toast.error("Product not configured. Please contact support or use manual payment.");
       return;
     }
 
     setDodoLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('dodo-checkout', {
+      const { data, error } = await supabase.functions.invoke('sapay-checkout', {
         body: {
-          productId: productId,
-          quantity: 1,
+          amount: price,
           customerEmail: user.email,
           customerName: user.user_metadata?.full_name || user.email,
-          amount: price,
           planType: `mentorship_${sessionType}`,
-          analysisId: sessionId,
+          sessionId: sessionId,
           returnUrl: `${window.location.origin}/mentorship/payment?status=success&type=${sessionType}`
         }
       });
@@ -156,7 +148,7 @@ const MentorshipPaymentPage = () => {
         throw new Error('No checkout URL received');
       }
     } catch (error) {
-      console.error('DodoPayment error:', error);
+      console.error('Payment gateway error:', error);
       toast.error("Payment gateway error. Please try another method.");
     } finally {
       setDodoLoading(false);
@@ -326,7 +318,7 @@ const MentorshipPaymentPage = () => {
                       variant="hero" 
                       size="lg" 
                       className="w-full"
-                      onClick={handleDodoCheckout}
+                      onClick={handleGatewayCheckout}
                       disabled={dodoLoading}
                     >
                       {dodoLoading ? (

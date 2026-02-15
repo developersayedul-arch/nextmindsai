@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.verify-dodo-payments]
 verify_jwt = false
+
+[functions.sapay-checkout]
+verify_jwt = false
+
+[functions.sapay-webhook]
+verify_jwt = false
