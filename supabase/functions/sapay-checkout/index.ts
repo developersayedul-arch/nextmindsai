@@ -18,15 +18,8 @@ interface CheckoutRequest {
   returnUrl: string;
 }
 
-function generateSignature(payload: Record<string, unknown>, secretKey: string): string {
-  const encoder = new TextEncoder();
-  const key = encoder.encode(secretKey);
-  const message = encoder.encode(JSON.stringify(payload));
-
-  // Use Web Crypto API (Deno compatible) for HMAC-SHA256
-  const cryptoKey = Deno.readSync ? null : null; // placeholder
-  // Deno supports crypto.subtle
-  return ''; // Will use async version below
+async function generateSignature(payload: Record<string, unknown>, secretKey: string): Promise<string> {
+  return await hmacSha256(secretKey, JSON.stringify(payload));
 }
 
 async function hmacSha256(secretKey: string, message: string): Promise<string> {
