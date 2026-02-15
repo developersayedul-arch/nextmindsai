@@ -114,29 +114,21 @@ const PaymentPage = () => {
   // Use explicit check for both the method and its type
   const isPaymentGateway = Boolean(selectedMethod && selectedMethod.type === 'payment_gateway');
 
-  // Handle DodoPayment checkout
-  const handleDodoCheckout = async () => {
+  // Handle SA Pay Core checkout
+  const handleGatewayCheckout = async () => {
     if (!user) {
       toast.error("Please login first");
-      return;
-    }
-
-    const productId = dodoProducts?.productMap?.[plan];
-    if (!productId) {
-      toast.error("Product not configured. Please contact support.");
       return;
     }
 
     setDodoLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('dodo-checkout', {
+      const { data, error } = await supabase.functions.invoke('sapay-checkout', {
         body: {
-          productId: productId,
-          quantity: 1,
+          amount: dodoProducts?.priceMap?.[plan] || PLAN_PRICES[plan],
           customerEmail: user.email,
           customerName: user.user_metadata?.full_name || user.email,
-          amount: dodoProducts?.priceMap?.[plan] || PLAN_PRICES[plan],
           planType: plan,
           analysisId: analysisId,
           returnUrl: `${window.location.origin}/payment?status=success&plan=${plan}`
@@ -146,13 +138,12 @@ const PaymentPage = () => {
       if (error) throw error;
 
       if (data?.checkoutUrl) {
-        // Redirect to DodoPayment checkout
         window.location.href = data.checkoutUrl;
       } else {
         throw new Error('No checkout URL received');
       }
     } catch (error) {
-      console.error('DodoPayment error:', error);
+      console.error('Payment gateway error:', error);
       toast.error("Payment gateway error. Please try another method.");
     } finally {
       setDodoLoading(false);
@@ -329,7 +320,7 @@ const PaymentPage = () => {
                       variant="hero" 
                       size="lg" 
                       className="w-full"
-                      onClick={handleDodoCheckout}
+                      onClick={handleGatewayCheckout}
                       disabled={dodoLoading}
                     >
                       {dodoLoading ? (
