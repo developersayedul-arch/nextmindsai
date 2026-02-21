@@ -2,10 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminRole } from "@/hooks/useAdminRole";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Leaf, User, LogOut, History, Shield, Zap, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,14 +20,15 @@ const Header = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdminRole();
+  const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/services', label: 'Services' },
-    { path: '/mentorship', label: 'Mentorship' },
-    { path: '/pricing', label: 'Pricing' },
-    { path: '/blog', label: 'Blog' },
+    { path: '/', label: t.nav.home },
+    { path: '/services', label: t.nav.services },
+    { path: '/mentorship', label: t.nav.mentorship },
+    { path: '/pricing', label: t.nav.pricing },
+    { path: '/blog', label: t.nav.blog },
   ];
   
   return (
@@ -113,7 +116,7 @@ const Header = () => {
                   : 'text-muted-foreground hover:text-primary hover:bg-primary/5'
               }`}
             >
-              History
+              {t.nav.history}
             </Link>
           )}
           {isAdmin && (
@@ -132,6 +135,7 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
           {user ? (
             <>
@@ -139,7 +143,7 @@ const Header = () => {
                 <Button variant="gold" size="sm" asChild className="hidden sm:flex gradient-coral coral-glow border-0 text-white">
                   <Link to="/analyze" className="flex items-center gap-2">
                     <Zap className="h-4 w-4" />
-                    Analyze করুন
+                    {t.nav.analyze}
                   </Link>
                 </Button>
               </motion.div>
@@ -153,7 +157,7 @@ const Header = () => {
                   <DropdownMenuItem asChild className="rounded-lg">
                     <Link to="/history" className="flex items-center gap-2">
                       <History className="h-4 w-4" />
-                      My Analyses
+                      {t.nav.history}
                     </Link>
                   </DropdownMenuItem>
                   {isAdmin && (
@@ -167,7 +171,7 @@ const Header = () => {
                   <DropdownMenuSeparator className="my-2" />
                   <DropdownMenuItem onClick={signOut} className="text-destructive rounded-lg">
                     <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    {t.common.logout}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -175,13 +179,13 @@ const Header = () => {
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild className="hidden sm:flex hover:bg-primary/5">
-                <Link to="/auth">Login</Link>
+                <Link to="/auth">{t.common.login}</Link>
               </Button>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Button variant="gold" size="sm" asChild className="gradient-coral coral-glow border-0 text-white">
                   <Link to="/analyze" className="flex items-center gap-2">
                     <Zap className="h-4 w-4" />
-                    <span className="hidden sm:inline">Analyze করুন</span>
+                    <span className="hidden sm:inline">{t.nav.analyze}</span>
                     <span className="sm:hidden">Start</span>
                   </Link>
                 </Button>
@@ -231,7 +235,7 @@ const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl"
                 >
-                  History
+                  {t.nav.history}
                 </Link>
               )}
               {!user && (
@@ -240,7 +244,7 @@ const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl"
                 >
-                  Login
+                  {t.common.login}
                 </Link>
               )}
             </nav>
