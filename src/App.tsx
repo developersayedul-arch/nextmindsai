@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "next-themes";
 import ChatWidget from "@/components/ChatWidget";
 import Index from "./pages/Index";
@@ -44,6 +45,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
     <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
@@ -87,6 +89,7 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );
