@@ -9,17 +9,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
-  Smartphone, 
   Loader2, 
   CheckCircle2, 
   Copy, 
-  Clock,
   ArrowLeft,
   Shield,
   Users,
-  MessageCircle,
-  CreditCard,
-  ExternalLink
+  MessageCircle
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,7 +46,6 @@ const SESSION_LABELS: Record<string, string> = {
   "tech-guidance": "টেক ও ওয়েবসাইট গাইডেন্স"
 };
 
-
 const MentorshipPaymentPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -64,10 +59,9 @@ const MentorshipPaymentPage = () => {
   const [transactionId, setTransactionId] = useState("");
   const [senderNumber, setSenderNumber] = useState("");
   const [loading, setLoading] = useState(false);
-  const [dodoLoading, setDodoLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Fetch active payment methods
+  // Fetch active manual payment methods only
   const { data: paymentMethods, isLoading: methodsLoading } = useQuery({
     queryKey: ["active-payment-methods"],
     queryFn: async () => {
@@ -75,6 +69,7 @@ const MentorshipPaymentPage = () => {
         .from("payment_methods")
         .select("*")
         .eq("is_active", true)
+        .neq("type", "payment_gateway")
         .order("display_order", { ascending: true });
       if (error) throw error;
       return data as PaymentMethod[];
@@ -82,26 +77,6 @@ const MentorshipPaymentPage = () => {
     staleTime: 0,
   });
 
-  // Fetch DodoPayment product IDs from database
-  const { data: dodoProducts } = useQuery({
-    queryKey: ["dodo-products-mentorship"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("dodo_products")
-        .select("product_key, dodo_product_id, price_bdt")
-        .eq("product_type", "mentorship")
-        .eq("is_active", true);
-      if (error) throw error;
-      // Convert to a map for easy lookup
-      const productMap: Record<string, string> = {};
-      data?.forEach((p: { product_key: string; dodo_product_id: string; price_bdt: number }) => {
-        productMap[p.product_key] = p.dodo_product_id;
-      });
-      return productMap;
-    },
-  });
-
-  // Set first method as default when loaded
   useEffect(() => {
     if (paymentMethods && paymentMethods.length > 0 && !selectedMethodId) {
       setSelectedMethodId(paymentMethods[0].id);
@@ -109,50 +84,11 @@ const MentorshipPaymentPage = () => {
   }, [paymentMethods, selectedMethodId]);
 
   const selectedMethod = paymentMethods?.find((m) => m.id === selectedMethodId);
-  
-  // Check if selected method is a payment gateway
-  const isPaymentGateway = Boolean(selectedMethod && selectedMethod.type === 'payment_gateway');
 
   const copyNumber = (number: string | null) => {
     if (!number) return;
     navigator.clipboard.writeText(number);
     toast.success("নম্বর copy হয়েছে!");
-  };
-
-  // Handle SA Pay Core checkout for mentorship
-  const handleGatewayCheckout = async () => {
-    if (!user) {
-      toast.error("Please login first");
-      return;
-    }
-
-    setDodoLoading(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('sapay-checkout', {
-        body: {
-          amount: price,
-          customerEmail: user.email,
-          customerName: user.user_metadata?.full_name || user.email,
-          planType: `mentorship_${sessionType}`,
-          sessionId: sessionId,
-          returnUrl: `${window.location.origin}/mentorship/payment?status=success&type=${sessionType}`
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else {
-        throw new Error('No checkout URL received');
-      }
-    } catch (error) {
-      console.error('Payment gateway error:', error);
-      toast.error("Payment gateway error. Please try another method.");
-    } finally {
-      setDodoLoading(false);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,7 +110,6 @@ const MentorshipPaymentPage = () => {
     setLoading(true);
 
     try {
-      // Create payment record for mentorship
       const { error: paymentError } = await supabase
         .from("payments")
         .insert({
@@ -190,13 +125,10 @@ const MentorshipPaymentPage = () => {
 
       if (paymentError) throw paymentError;
 
-      // Update mentorship session payment status if sessionId exists
       if (sessionId) {
         const { error: sessionError } = await supabase
           .from("mentorship_sessions")
-          .update({ 
-            payment_status: "paid"
-          })
+          .update({ payment_status: "paid" })
           .eq("id", sessionId);
 
         if (sessionError) {
@@ -244,7 +176,6 @@ const MentorshipPaymentPage = () => {
     <Layout>
       <div className="section-container py-12 md:py-20">
         <div className="max-w-lg mx-auto">
-          {/* Back Link */}
           <Link 
             to="/mentorship" 
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
@@ -253,14 +184,11 @@ const MentorshipPaymentPage = () => {
             মেন্টরশিপে ফিরে যান
           </Link>
 
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="gradient-hero w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Users className="h-8 w-8 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold mb-2">
-              মেন্টরশিপ পেমেন্ট
-            </h1>
+            <h1 className="text-2xl font-bold mb-2">মেন্টরশিপ পেমেন্ট</h1>
             <p className="text-muted-foreground">
               {SESSION_LABELS[sessionType]} - ৳{price}
             </p>
@@ -268,7 +196,6 @@ const MentorshipPaymentPage = () => {
 
           {!submitted ? (
             <div className="bg-card border border-border rounded-2xl p-6">
-              {/* Payment Method Selection */}
               <div className="mb-6">
                 <Label className="text-base font-medium mb-3 block">পেমেন্ট মেথড</Label>
                 <RadioGroup
@@ -286,146 +213,92 @@ const MentorshipPaymentPage = () => {
                       }`}
                     >
                       <RadioGroupItem value={method.id} className="sr-only" />
-                      {method.type === 'payment_gateway' && (
-                        <CreditCard className="h-4 w-4 mb-1 text-primary" />
-                      )}
                       <span className="font-medium text-sm text-center">{method.name}</span>
-                      {method.type === 'payment_gateway' && (
-                        <span className="text-[10px] text-muted-foreground mt-0.5">Online</span>
-                      )}
                     </Label>
                   ))}
                 </RadioGroup>
               </div>
 
-              {/* Show different UI based on payment method type */}
-              {isPaymentGateway ? (
-                /* DodoPayment / Online Gateway UI */
-                <div className="space-y-4">
-                  {selectedMethod?.instructions && (
-                    <div className="bg-secondary/30 p-4 rounded-lg">
-                      <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
-                    </div>
-                  )}
+              <div className="space-y-4">
+                {selectedMethod?.instructions && (
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <p className="font-medium mb-2">নির্দেশনা:</p>
+                    <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
+                  </div>
+                )}
 
-                  <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg text-center">
-                    <CreditCard className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="font-medium mb-1">Pay ৳{price}</p>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Secure online payment via {selectedMethod?.name}
+                {selectedMethod?.account_number && (
+                  <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {selectedMethod.name} নম্বর:
                     </p>
-                    <Button 
-                      variant="hero" 
-                      size="lg" 
-                      className="w-full"
-                      onClick={handleGatewayCheckout}
-                      disabled={dodoLoading}
-                    >
-                      {dodoLoading ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Redirecting...
-                        </>
-                      ) : (
-                        <>
-                          <ExternalLink className="h-5 w-5" />
-                          Pay with {selectedMethod?.name}
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-primary">
+                        {selectedMethod.account_number}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyNumber(selectedMethod.account_number)}
+                      >
+                        <Copy className="h-4 w-4" />
+                        Copy
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Amount: ৳{price} {selectedMethod.account_name && `(${selectedMethod.account_name})`}
+                    </p>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="transactionId">Transaction ID</Label>
+                    <Input
+                      id="transactionId"
+                      placeholder="যেমন: TXN123456789"
+                      value={transactionId}
+                      onChange={(e) => setTransactionId(e.target.value)}
+                      required
+                    />
                   </div>
 
-                  <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
-                    <Shield className="h-3 w-3" />
-                    Secure payment powered by {selectedMethod?.name}
-                  </p>
-                </div>
-              ) : (
-                /* Manual Payment UI (bKash, Nagad, etc.) */
-                <div className="space-y-4">
-                  {/* Payment Instructions */}
-                  {selectedMethod?.instructions && (
-                    <div className="bg-secondary/30 p-4 rounded-lg">
-                      <p className="font-medium mb-2">নির্দেশনা:</p>
-                      <p className="text-sm text-muted-foreground">{selectedMethod.instructions}</p>
-                    </div>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="senderNumber">আপনার নম্বর</Label>
+                    <Input
+                      id="senderNumber"
+                      placeholder="01XXXXXXXXX"
+                      value={senderNumber}
+                      onChange={(e) => setSenderNumber(e.target.value)}
+                      required
+                    />
+                  </div>
 
-                  {/* Payment Number */}
-                  {selectedMethod?.account_number && (
-                    <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg">
-                      <p className="text-sm text-muted-foreground mb-1">
-                        {selectedMethod.name} নম্বর:
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-primary">
-                          {selectedMethod.account_number}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyNumber(selectedMethod.account_number)}
-                        >
-                          <Copy className="h-4 w-4" />
-                          Copy
-                        </Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Amount: ৳{price} {selectedMethod.account_name && `(${selectedMethod.account_name})`}
-                      </p>
-                    </div>
-                  )}
+                  <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        সাবমিট হচ্ছে...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="h-5 w-5" />
+                        পেমেন্ট সাবমিট করুন
+                      </>
+                    )}
+                  </Button>
+                </form>
 
-                  {/* Form */}
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="transactionId">Transaction ID</Label>
-                      <Input
-                        id="transactionId"
-                        placeholder="যেমন: TXN123456789"
-                        value={transactionId}
-                        onChange={(e) => setTransactionId(e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="senderNumber">আপনার নম্বর</Label>
-                      <Input
-                        id="senderNumber"
-                        placeholder="01XXXXXXXXX"
-                        value={senderNumber}
-                        onChange={(e) => setSenderNumber(e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
-                      {loading ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          সাবমিট হচ্ছে...
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="h-5 w-5" />
-                          পেমেন্ট সাবমিট করুন
-                        </>
-                      )}
-                    </Button>
-                  </form>
-
-                  <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
-                    <Shield className="h-3 w-3" />
-                    Powered by SA Coder
-                  </p>
-                </div>
-              )}
+                <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  Powered by SA Coder
+                </p>
+              </div>
             </div>
           ) : (
             <div className="bg-card border border-border rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="h-8 w-8 text-green-500" />
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="h-8 w-8 text-primary" />
               </div>
               <h2 className="text-xl font-semibold mb-2">পেমেন্ট তথ্য জমা হয়েছে!</h2>
               <p className="text-muted-foreground mb-6">
@@ -453,7 +326,6 @@ const MentorshipPaymentPage = () => {
             </div>
           )}
 
-          {/* Trust Footer */}
           <div className="text-center mt-8">
             <p className="text-sm text-muted-foreground">
               Powered by <span className="font-semibold text-foreground">SA Coder</span>
